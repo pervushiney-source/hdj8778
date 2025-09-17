@@ -1,5 +1,5 @@
 {
-  "static_path": "hello",
+  "static_path": ".",
   "app_id": 54153831,
   "deployment": {
     "staging": "https://pervushiney.github.io/hdj8778/",
@@ -7,4 +7,5 @@
     "development": "https://pervushiney.github.io/hdj8778/"
   }
 }
+
 
