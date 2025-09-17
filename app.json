@@ -2,8 +2,9 @@
   "static_path": "hello",
   "app_id": 4138643,
   "endpoint": {
-    "newlist": "index.html",
-    "web": "index.html",
-    "env": "index.html"
+    "newlist": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html",
+    "web": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html",
+    "env": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html"
   }
 }
+
