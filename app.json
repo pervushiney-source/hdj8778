@@ -2,10 +2,11 @@
   "static_path": ".",
   "app_id": 54153831,
   "deployment": {
-    "staging": "https://pervushiney.github.io/hdj8778/",
-    "production": "https://pervushiney.github.io/hdj8778/",
-    "development": "https://pervushiney.github.io/hdj8778/"
+    "staging": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html",
+    "production": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html",
+    "development": "https://github.com/pervushiney-source/hdj8778/blob/main/index.html"
   }
 }
+
 
 
