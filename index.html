@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME DJ - ВК Мини-приложение</title>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <style>
         :root {
             --accent-color: #FFFF00;
@@ -1261,27 +1262,35 @@
     <div class="developer-signature-hidden">Разработчик Первушин Е.Ю</div>
 
     <script>
-        // VK Mini App API инициализация
-        if (window.VK) {
-            VK.init(function() {
-                console.log('VK API initialized');
-                // Проверяем, авторизован ли пользователь
-                VK.Auth.getLoginStatus(function(response) {
-                    if (response.session) {
-                        // Пользователь авторизован
-                        handleAuthSuccess(response);
-                    } else {
-                        // Показываем модальное окно авторизации
-                        document.getElementById('authModal').style.display = 'block';
-                    }
-                });
-            });
-        } else {
-            // Если VK API не загружен, показываем модальное окно авторизации
-            document.getElementById('authModal').style.display = 'block';
-        }
-
+        // Инициализация VK Mini App
         document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, запущено ли приложение внутри VK
+            if (typeof vkBridge !== 'undefined') {
+                vkBridge.send('VKWebAppInit', {})
+                    .then(data => {
+                        console.log('VK Mini App initialized');
+                        document.getElementById('statusIndicator').classList.add('status-connected');
+                        document.getElementById('statusText').textContent = 'Connected to VK';
+                        
+                        // Проверяем авторизацию
+                        return vkBridge.send('VKWebAppGetAuthToken', {
+                            app_id: 54153831,
+                            scope: 'audio'
+                        });
+                    })
+                    .then(data => {
+                        // Успешная авторизация
+                        handleAuthSuccess(data);
+                    })
+                    .catch(error => {
+                        console.error('VK init error:', error);
+                        document.getElementById('authModal').style.display = 'block';
+                    });
+            } else {
+                console.log('Running outside VK environment');
+                document.getElementById('authModal').style.display = 'block';
+            }
+
             // Константы и переменные
             const modal = document.getElementById('playlistModal');
             const closeBtn = document.getElementById('closeModal');
@@ -1339,6 +1348,7 @@
             let peakTimeoutB = null;
             let isAuthorized = false;
             let userData = null;
+            let accessToken = null;
             
             // Новые переменные для Key Lock и Scratch Mode
             let keyLockState = { A: false, B: false };
@@ -1370,7 +1380,6 @@
             };
             
             // Инициализация
-            statusIndicator.classList.add('status-connected');
             createWaveformBars('A');
             createWaveformBars('B');
             updateTimeInfo('A');
@@ -1381,22 +1390,22 @@
             // Функция авторизации через VK
             function initVKAuth() {
                 authButton.addEventListener('click', function() {
-                    if (window.VK) {
-                        VK.Auth.login(function(response) {
-                            if (response.session) {
-                                handleAuthSuccess(response);
-                            }
-                        }, 8); // 8 - права доступа к аудио
+                    if (typeof vkBridge !== 'undefined') {
+                        vkBridge.send('VKWebAppGetAuthToken', {
+                            app_id: 54153831,
+                            scope: 'audio'
+                        })
+                        .then(data => {
+                            handleAuthSuccess(data);
+                        })
+                        .catch(error => {
+                            console.error('Auth error:', error);
+                        });
                     } else {
                         // Эмуляция авторизации для демонстрации
                         handleAuthSuccess({
-                            session: {
-                                user: {
-                                    id: 123456,
-                                    first_name: 'Демо',
-                                    last_name: 'Пользователь'
-                                }
-                            }
+                            access_token: 'demo_token',
+                            scope: 'audio'
                         });
                     }
                 });
@@ -1405,15 +1414,27 @@
             // Обработка успешной авторизации
             function handleAuthSuccess(response) {
                 isAuthorized = true;
+                accessToken = response.access_token;
                 authModal.style.display = 'none';
                 
                 // Получаем информацию о пользователе
-                if (window.VK) {
-                    VK.Api.call('users.get', { fields: 'photo_100' }, function(userResponse) {
+                if (typeof vkBridge !== 'undefined') {
+                    vkBridge.send('VKWebAppCallAPIMethod', {
+                        method: 'users.get',
+                        params: {
+                            fields: 'photo_100',
+                            access_token: accessToken,
+                            v: '5.131'
+                        }
+                    })
+                    .then(userResponse => {
                         if (userResponse.response) {
                             userData = userResponse.response[0];
                             updateUserInfo();
                         }
+                    })
+                    .catch(error => {
+                        console.error('User info error:', error);
                     });
                 } else {
                     // Демо-данные
@@ -1451,12 +1472,24 @@
             
             // Загрузка плейлистов пользователя
             function loadUserPlaylists() {
-                if (window.VK) {
+                if (typeof vkBridge !== 'undefined' && accessToken) {
                     // Загрузка реальных плейлистов через VK API
-                    VK.Api.call('audio.getPlaylists', { owner_id: userData.id, count: 20 }, function(response) {
+                    vkBridge.send('VKWebAppCallAPIMethod', {
+                        method: 'audio.getPlaylists',
+                        params: {
+                            owner_id: userData.id,
+                            count: 20,
+                            access_token: accessToken,
+                            v: '5.131'
+                        }
+                    })
+                    .then(response => {
                         if (response.response) {
                             displayPlaylists(response.response.items);
                         }
+                    })
+                    .catch(error => {
+                        console.error('Playlists loading error:', error);
                     });
                 } else {
                     // Демо-плейлисты
@@ -1520,12 +1553,23 @@
             
             // Загрузка треков из плейлиста
             function loadPlaylistTracks(playlistId) {
-                if (window.VK) {
+                if (typeof vkBridge !== 'undefined' && accessToken) {
                     // Загрузка реальных треков через VK API
-                    VK.Api.call('audio.get', { playlist_id: playlistId }, function(response) {
+                    vkBridge.send('VKWebAppCallAPIMethod', {
+                        method: 'audio.get',
+                        params: {
+                            playlist_id: playlistId,
+                            access_token: accessToken,
+                            v: '5.131'
+                        }
+                    })
+                    .then(response => {
                         if (response.response) {
                             displayTracks(response.response.items);
                         }
+                    })
+                    .catch(error => {
+                        console.error('Tracks loading error:', error);
                     });
                 } else {
                     // Демо-треки
@@ -1573,7 +1617,7 @@
                     li.dataset.title = track.title;
                     li.dataset.artist = track.artist;
                     li.dataset.duration = track.duration;
-                    li.dataset.url = track.url;
+                    li.dataset.url = track.url || '#';
                     
                     // Генерация BPM для демо (в реальном приложении это будет приходить из API)
                     const bpm = Math.floor(Math.random() * 40) + 100;
@@ -1630,8 +1674,13 @@
             
             // Выход из аккаунта
             logoutBtn.addEventListener('click', function() {
-                if (window.VK) {
-                    VK.Auth.logout(function() {
+                if (typeof vkBridge !== 'undefined') {
+                    vkBridge.send('VKWebAppLogout', {})
+                    .then(data => {
+                        handleLogout();
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
                         handleLogout();
                     });
                 } else {
@@ -1643,6 +1692,7 @@
             function handleLogout() {
                 isAuthorized = false;
                 userData = null;
+                accessToken = null;
                 userInfo.style.display = 'none';
                 loginButton.style.display = 'block';
                 
@@ -1662,11 +1712,22 @@
                         loadUserPlaylists();
                     } else {
                         // Загрузка аудиозаписей пользователя
-                        if (window.VK) {
-                            VK.Api.call('audio.get', { count: 50 }, function(response) {
+                        if (typeof vkBridge !== 'undefined' && accessToken) {
+                            vkBridge.send('VKWebAppCallAPIMethod', {
+                                method: 'audio.get',
+                                params: {
+                                    count: 50,
+                                    access_token: accessToken,
+                                    v: '5.131'
+                                }
+                            })
+                            .then(response => {
                                 if (response.response) {
                                     displayTracks(response.response.items);
                                 }
+                            })
+                            .catch(error => {
+                                console.error('Audio loading error:', error);
                             });
                         } else {
                             // Демо-аудиозаписи
