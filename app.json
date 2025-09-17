@@ -1,9 +1,10 @@
 {
   "static_path": "hello",
-  "app_id": 4138643,
+  "app_id": 54153831,
   "deployment": {
     "staging": "https://pervushiney.github.io/hdj8778/",
     "production": "https://pervushiney.github.io/hdj8778/",
     "development": "https://pervushiney.github.io/hdj8778/"
   }
 }
+
