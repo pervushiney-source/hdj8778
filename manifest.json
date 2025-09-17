@@ -1,0 +1,14 @@
+{
+  "url": "index.html",
+  "name": "HOME DJ",
+  "icon": "https://example.com/icon.png",
+  "description": "DJ приложение для микширования музыки",
+  "open_in": "default",
+  "api": {
+    "scope": ["audio", "friends", "storage"],
+    "auth": true
+  },
+  "hooks": {
+    "on_accept_group_invite": "group_invite_accepted"
+  }
+}
