@@ -6,6 +6,7 @@
     <title>HOME DJ - ВК Мини-приложение</title>
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <style>
+        /* Все стили остаются без изменений */
         :root {
             --accent-color: #FFFF00;
             --accent-dark: #CCCC00;
@@ -517,7 +518,7 @@
         
         .crossfader-header {
             color: var(--accent-color);
-            font-weight: bold;
+            fontWeight: bold;
             margin-bottom: 10px;
         }
         
@@ -1085,7 +1086,7 @@
                             
                             <div class="track-visual-container">
                                 <div class="track-cover" id="trackCoverA">
-                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIg极fillD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPkRIPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPkRIPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
                                 </div>
                                 
                                 <div class="waveform" id="waveformA">
@@ -1168,7 +1169,7 @@
                             
                             <div class="track-visual-container">
                                 <div class="track-cover" id="trackCoverB">
-                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2иkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
                                 </div>
                                 
                                 <div class="waveform" id="waveformB">
@@ -1320,7 +1321,7 @@
                     `${window.userData.first_name} ${window.userData.last_name}`;
                 
                 const avatarImg = document.createElement('img');
-                avatarImg.src = window.userData.photo_100 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg==';
+                avatarImg.src = window.userData.photo_100 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgcyk9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg==';
                 avatarImg.alt = 'User Avatar';
                 document.getElementById('userAvatar').innerHTML = '';
                 document.getElementById('userAvatar').appendChild(avatarImg);
@@ -1332,11 +1333,12 @@
             try {
                 if (typeof vkBridge !== 'undefined' && isAuthorized) {
                     try {
+                        // Пытаемся получить аудиозаписи через VK API
                         const response = await vkBridge.send('VKWebAppCallAPIMethod', {
                             method: 'audio.get',
                             params: {
                                 count: 100,
-                                v: '5.131'
+                                v: '5.199' // Используем актуальную версию API
                             }
                         });
                         
@@ -1501,13 +1503,26 @@
                     }
                 } catch (error) {
                     console.error('Ошибка авторизации:', error);
-                    alert('Ошибка авторизации: ' + error.message + '. Проверьте настройки приложения и app_id.');
+                    
+                    // Более информативное сообщение об ошибке
+                    let errorMessage = 'Неизвестная ошибка';
+                    if (error) {
+                        if (error.error_data && error.error_data.error_description) {
+                            errorMessage = error.error_data.error_description;
+                        } else if (error.error_type) {
+                            errorMessage = error.error_type;
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+                    }
+                    
+                    alert('Ошибка авторизации: ' + errorMessage + '. Проверьте настройки приложения и app_id.');
                     
                     // Включаем демо-режим при ошибке авторизации
                     handleAuthSuccess({
                         first_name: 'Демо',
                         last_name: 'Режим',
-                        photo_100: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5EZW1vPC90ZXh0Pjwvc3ZnPg=='
+                        photo_100: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI5MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5EZW1vPC90ZXh0Pjwvc3ZnPg=='
                     });
                 }
             });
@@ -1699,7 +1714,7 @@
                 if (deckId === 'A' && vuIntervalA) clearInterval(vuIntervalA);
                 if (deckId === 'B' && vuIntervalB) clearInterval(vuIntervalB);
                 
-                const interval = setInterval(() => {
+                const interval = setInterval(() {
                     const level = Math.min(100, Math.floor(Math.random() * 110));
                     updateVUMeter(deckId, level);
                 }, 100);
