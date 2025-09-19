@@ -3,263 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VK Audio Player</title>
+    <title>HOME DJ - ВК Мини-приложение</title>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <style>
         :root {
-            --accent-color: #07f;
-            --accent-dark: #0055cc;
-            --accent-shadow: rgba(0, 85, 204, 0.5);
-            --accent-hover: #3399ff;
-            --cue-playing-color: #0f0;
-            --cue-shadow: rgba(0, 255, 0, 0.5);
-            --bg-color: #121212;
-            --panel-bg: #1e1e1e;
-            --text-color: #fff;
-            --border-color: #333;
+            --accent-color: #FFFF00;
+            --accent-dark: #CCCC00;
+            --accent-shadow: rgba(255,255,0,0.5);
+            --accent-hover: #FFD700;
+            --cue-playing-color: #FF0000;
+            --cue-shadow: rgba(255,0,0,0.5);
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            opacity: 0;
+            animation: startupAnimation 2s forwards;
         }
-
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            width: 100%;
+        
+        @keyframes startupAnimation {
+            to { opacity: 1; }
         }
-
-        .header {
+        
+        .container { max-width: 100%; }
+        
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            background-color: #111;
+            border-bottom: 2px solid var(--accent-color);
+            margin-bottom: 15px;
+            border-radius: 8px;
         }
-
-        .app-title {
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
             font-size: 24px;
             font-weight: bold;
             color: var(--accent-color);
         }
-
-        .user-section {
+        
+        .vk-channel-link {
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .hdj-rectangle {
+            background-color: var(--accent-color);
+            color: #000;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--accent-shadow);
+        }
+        
+        @keyframes blinkRed {
+            50% { background-color: #ff0000; }
+        }
+        
+        .color-picker {
             display: flex;
-            align-items: center;
             gap: 10px;
         }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
+        
+        .color-option {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-size: 14px;
-        }
-
-        .login-button, .logout-button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
+            border: 2px solid #333;
+            transition: transform 0.2s ease;
         }
-
-        .login-button:hover, .logout-button:hover {
-            background-color: var(--accent-hover);
+        
+        .color-option:hover,
+        .color-option.active {
+            transform: scale(1.2);
+            border-color: #fff;
         }
-
-        .deck-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .deck {
-            flex: 1;
-            background-color: var(--panel-bg);
-            border-radius: 10px;
-            padding: 15px;
+        
+        .main-content {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
+        
+        .deck-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .deck {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+        }
+        
+        .deck-main { flex: 1; }
+        
+        .deck-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 10px;
+            width: 80px;
+        }
+        
         .deck-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 15px;
         }
-
+        
         .deck-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 14px;
+        }
+        
+        .bpm-display-large {
             font-size: 18px;
             font-weight: bold;
             color: var(--accent-color);
-        }
-
-        .load-track-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .bpm-display-large {
-            font-size: 32px;
-            font-weight: bold;
             text-align: center;
-            color: var(--accent-color);
+            margin: 5px 0;
         }
-
-        .track-info {
-            text-align: center;
-        }
-
-        .track-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .track-artist {
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 5px;
-        }
-
-        .track-key {
-            font-size: 14px;
-            color: var(--accent-color);
-        }
-
-        .analysis-status {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
-        }
-
+        
         .track-visual-container {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: flex-start;
         }
-
+        
         .track-cover {
             width: 80px;
             height: 80px;
             border-radius: 5px;
             overflow: hidden;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 8px var(--accent-shadow);
             flex-shrink: 0;
         }
-
+        
         .track-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        .waveform {
+        
+        .waveform { 
             flex: 1;
-            height: 80px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 0;
         }
-
+        
+        .track-info { margin-bottom: 10px; }
+        
+        .track-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .track-artist {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+        
+        .track-key {
+            font-size: 14px;
+            color: #4cc9f0;
+            margin-bottom: 10px;
+        }
+        
+        .waveform-container {
+            background-color: #222;
+            border-radius: 18px;
+            padding: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        @keyframes waveform-warning {
+            to { background-color: #ff0000; }
+        }
+        
+        .waveform-visual {
+            height: 40px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        
         .waveform-bars {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
             display: flex;
             align-items: flex-end;
-            padding: 5px;
-            gap: 2px;
+            height: 100%;
+            gap: 1px;
         }
-
+        
         .waveform-bar {
-            flex: 1;
-            background-color: var(--accent-color);
+            background: linear-gradient(to top, var(--accent-color), var(--accent-dark));
             border-radius: 1px;
-            min-height: 5px;
+            min-width: 2px;
+            flex: 1;
         }
-
+        
         .waveform-progress {
             position: absolute;
             top: 0;
             left: 0;
             height: 100%;
-            width: 0;
-            background-color: rgba(0, 119, 255, 0.2);
+            width: 0%;
+            background: linear-gradient(90deg, rgba(255, 255, 0, 0.2) 0%, transparent 100%);
             pointer-events: none;
+            z-index: 5;
+            border-radius: 18px;
         }
-
+        
         .time-info {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-size: 10px;
-            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #aaa;
+            font-size: 12px;
         }
-
+        
+        .current-time,
+        .remaining-time {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
         .vinyl-jog {
-            width: 100px;
-            height: 100px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #111, #333);
-            margin: 0 auto;
+            background: 
+                radial-gradient(circle at center, #333 20%, #222 21%, #222 30%, #333 31%),
+                repeating-radial-gradient(
+                    circle at center,
+                    #222 0, #222 2px, #333 2px, #333 4px
+                );
+            margin: 0 auto 15px;
             position: relative;
+            border: 2px solid var(--accent-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px solid #444;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: var(--accent-color);
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--accent-shadow);
+            transition: all 0.2s ease;
+            cursor: grab;
         }
-
-        .vinyl-lines {
-            position: absolute;
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            background: repeating-radial-gradient(
-                circle at center,
-                transparent,
-                transparent 5px,
-                #444 5px,
-                #444 6px
-            );
+        
+        .vinyl-jog.scratching {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
         }
-
+        
         .vinyl-center {
             width: 30px;
             height: 30px;
@@ -268,718 +294,1099 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            font-weight: bold;
+            color: #000;
+            font-size: 12px;
             z-index: 2;
         }
-
-        .vinyl-rotating {
-            animation: rotate 4s linear infinite;
+        
+        .vinyl-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: repeating-radial-gradient(
+                circle at center,
+                transparent 0, transparent 5px,
+                rgba(255, 255, 0, 0.1) 5px, rgba(255, 255, 0, 0.1) 7px
+            );
         }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
+        
         .deck-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
         }
-
+        
+        .control-btn {
+            padding: 8px 12px;
+            background-color: #222;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn.active {
+            background-color: #f00;
+            color: #fff;
+        }
+        
+        .control-btn.key-lock {
+            background-color: #333;
+        }
+        
+        .control-btn.key-lock.active {
+            background-color: #4cc9f0;
+            color: #000;
+        }
+        
+        .cue-play-btn-round {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 5px;
+            box-shadow: 0 0 10px var(--accent-shadow);
+            transition: all 0.2s ease;
+        }
+        
+        .cue-play-btn-round.playing {
+            background-color: var(--cue-playing-color);
+            color: #fff;
+            box-shadow: 0 0 10px var(--cue-shadow);
+        }
+        
         .pitch-slider-vertical {
+            height: 300px;
+            margin: 10px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+        }
+        
+        .pitch-controls {
+            position: absolute;
+            left: -40px;
+            top: 0;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
-
-        .pitch-controls {
-            display: flex;
-            gap: 5px;
-        }
-
+        
         .pitch-btn {
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background-color: #333;
-            color: white;
+            background-color: var(--accent-color);
+            color: #000;
             border: none;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 16px;
+            box-shadow: 0 0 5px var(--accent-shadow);
+            transition: all 0.2s ease;
+        }
+        
+        .pitch-btn:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .slider-vertical {
+            -webkit-appearance: slider-vertical;
+            width: 6px;
+            height: 240px;
+            background: #333;
+            outline: none;
+            border-radius: 3px;
+            writing-mode: bt-lr;
+        }
+        
+        .slider-vertical::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+        }
+        
+        .pitch-value {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-top: 5px;
             font-weight: bold;
         }
-
-        .slider-vertical {
-            writing-mode: bt-lr;
-            -webkit-appearance: slider-vertical;
+        
+        .pitch-center {
             width: 20px;
-            height: 100px;
-        }
-
-        .pitch-value {
-            font-size: 12px;
-            color: var(--accent-color);
-        }
-
-        .cue-play-btn-round {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            height: 2px;
             background-color: var(--accent-color);
-            color: white;
-            border: none;
-            cursor: pointer;
+            margin: 2px 0;
+        }
+        
+        .vu-meter-container {
+            width: 20px;
+            height: 300px;
+            background: #111;
+            border-radius: 5px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        
+        .vu-meter {
+            width: 100%;
+            height: 100%;
+            position: relative;
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .vu-scale {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        
+        .vu-scale-line {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .vu-level {
+            width: 100%;
+            background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
+            transition: height 0.1s ease;
+            border-radius: 0 0 3px 3px;
+        }
+        
+        .vu-label {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: var(--accent-color);
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .vu-peak {
+            position: absolute;
+            width: 6px;
+            height: 2px;
+            background: #fff;
+            right: 2px;
+            transition: top 0.5s ease;
+        }
+        
+        .central-crossfader {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .crossfader-header {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .crossfader {
+            width: 50%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #333;
+            outline: none;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+        
+        .crossfader::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+        }
+        
+        .deck-load-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
-            line-height: 1.2;
-            transition: all 0.3s;
-        }
-
-        .cue-play-btn-round.playing {
-            background-color: #f00;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        }
-
-        .central-crossfader {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .crossfader-header {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #ccc;
-        }
-
-        .crossfader {
-            width: 100%;
-            height: 20px;
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: var(--panel-bg);
-            border-radius: 5px;
             font-size: 12px;
-            color: #999;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 0 0 10px var(--accent-shadow);
+            transition: all 0.2s ease;
         }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #0f0;
-            margin-right: 5px;
+        
+        .deck-load-btn:hover {
+            background-color: var(--accent-hover);
         }
-
-        .modal {
+        
+        .deck-load-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @keyframes load-error {
+            50% { background-color: #f00; }
+        }
+        
+        .deck-controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 10px;
+            justify-content: flex-start;
+        }
+        
+        .sync-btn-container { margin-top: 10px; }
+        
+        .loop-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .loop-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .loop-btn.active {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+        
+        .key-lock-container {
+            margin-top: 10px;
+        }
+        
+        .playlist-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.95);
             z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: var(--panel-bg);
-            border-radius: 10px;
             padding: 20px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
             overflow-y: auto;
-            position: relative;
         }
-
+        
+        .playlist-content {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            border: 1px solid var(--accent-color);
+        }
+        
         .close-modal {
             position: absolute;
             top: 10px;
-            right: 10px;
+            right: 15px;
+            color: var(--accent-color);
+            font-size: 24px;
+            cursor: pointer;
             background: none;
             border: none;
-            color: #ccc;
-            font-size: 20px;
-            cursor: pointer;
+            font-weight: bold;
         }
-
-        .playlist-title, .auth-title {
-            font-size: 18px;
-            margin-bottom: 15px;
+        
+        .playlist-title {
             color: var(--accent-color);
+            margin-bottom: 15px;
             text-align: center;
+            font-size: 18px;
+            cursor: default;
         }
-
-        .auth-text {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ccc;
+        
+        .playlist-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
         }
-
-        .auth-button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent-color);
-            color: white;
+        
+        .playlist-tab {
+            padding: 8px 15px;
+            background-color: #222;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            color: #fff;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
+            transition: all 0.2s ease;
         }
-
+        
+        .playlist-tab.active {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+        
         .playlist-tracks {
             list-style: none;
-            margin-top: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+            border-radius: 6px;
+            background-color: #222;
         }
-
+        
         .playlist-track {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 12px;
+            border-bottom: 1px solid #333;
             cursor: pointer;
-            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
+        
         .playlist-track:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: #333;
         }
-
+        
+        .track-info-modal {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .track-name-modal {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .track-artist-modal {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .track-bpm {
+            background-color: var(--accent-color);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
         .track-cover-modal {
             width: 40px;
             height: 40px;
             border-radius: 4px;
             overflow: hidden;
             margin-right: 10px;
-            flex-shrink: 0;
         }
-
+        
         .track-cover-modal img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        .track-info-modal {
-            flex: 1;
+        
+        .status-bar {
+            background-color: #111;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--accent-color);
+            border-radius: 8px;
+            margin-top: 10px;
+            position: relative;
         }
-
-        .track-name-modal {
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-
-        .track-artist-modal {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .track-bpm {
-            font-size: 12px;
+        
+        .master-bpm-display {
             color: var(--accent-color);
-            margin-left: 10px;
             font-weight: bold;
+            font-size: 14px;
         }
-
-        .playlist-empty {
-            text-align: center;
-            padding: 20px;
-            color: #999;
+        
+        .time-display {
+            color: #fff;
+            font-size: 14px;
         }
-
-        .blink-red {
-            animation: blinkRed 0.5s 3;
+        
+        .developer-signature {
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 15px;
         }
-
-        @keyframes blinkRed {
-            0% { background-color: var(--panel-bg); }
-            50% { background-color: rgba(255, 0, 0, 0.3); }
-            100% { background-color: var(--panel-bg); }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
         }
-
-        .warning {
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #f00;
         }
-
-        .disabled {
-            opacity: 0.5;
+        
+        .status-connected { background-color: #0f0; }
+        
+        .analysis-status {
+            font-size: 12px;
+            color: #4cc9f0;
+            margin-top: 5px;
+        }
+        
+        @keyframes vinyl-spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .vinyl-rotating {
+            animation: vinyl-spin 2s linear infinite;
+        }
+        
+        .vinyl-paused {
+            animation-play-state: paused;
+        }
+        
+        .developer-signature-hidden {
+            position: absolute;
+            opacity: 0.01;
             pointer-events: none;
+            user-select: none;
+            font-size: 1px;
+            color: transparent;
         }
-
-        /* Адаптивность */
+        
+        .deck-inner { display: flex; width: 100%; }
+        
+        @keyframes blink-warning {
+            50% { background-color: #f00; }
+        }
+        
+        .blink-warning {
+            animation: blink-warning 0.5s ease 3;
+        }
+        
+        .deck-controls-pitch-vu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .auth-content {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 100px auto;
+            position: relative;
+            border: 1px solid var(--accent-color);
+            text-align: center;
+        }
+        
+        .auth-title {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .auth-text {
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .auth-button {
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .auth-button:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--accent-color);
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-name {
+            color: #fff;
+            font-size: 14px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .logout-btn:hover {
+            color: #fff;
+        }
+        
         @media (max-width: 768px) {
-            .deck-container {
+            .deck-panel { grid-template-columns: 1fr; }
+            .deck { flex-direction: column; }
+            .deck-inner { flex-direction: column; }
+            
+            .deck-controls-container {
+                flex-direction: row;
+                justify-content: center;
+                margin-right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            
+            .deck-side {
+                flex-direction: row;
+                justify-content: space-around;
+                width: 100%;
+                margin-left: 0;
+                margin-top: 15px;
+            }
+            
+            .pitch-slider-vertical {
+                height: auto;
+                width: 100px;
+                margin: 0 15px;
+            }
+            
+            .vu-meter-container {
+                height: 200px;
+                width: 15px;
+            }
+            
+            .pitch-controls {
+                position: static;
+                flex-direction: row;
+                margin-bottom: 10px;
+            }
+            
+            .cue-play-btn-round {
+                margin: 0 15px;
+                width: 60px;
+                height: 60px;
+                font-size: 12px;
+            }
+            
+            .deck-controls { margin-bottom: 10px; }
+            
+            .control-btn { padding: 10px; font-size: 14px; }
+            
+            .vinyl-jog { width: 120px; height: 120px; }
+            
+            .deck-load-btn { margin: 0 10px; }
+            
+            .sync-btn-container { margin-top: 5px; margin-left: 10px; }
+            
+            .color-picker { gap: 5px; }
+            
+            .color-option { width: 16px; height: 16px; }
+            
+            .crossfader { width: 70%; }
+            
+            .loop-buttons { flex-direction: row; margin-top: 5px; }
+            
+            .deck-controls-pitch-vu {
                 flex-direction: column;
+                gap: 5px;
+            }
+            
+            .track-cover {
+                width: 60px;
+                height: 60px;
             }
             
             .track-visual-container {
                 flex-direction: column;
+                align-items: center;
             }
             
             .waveform {
                 width: 100%;
             }
+            
+            .logo-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .status-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .developer-signature {
+                order: 3;
+                margin-right: 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .user-name {
+                max-width: 80px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <div class="header">
-            <div class="app-title">VK Audio Player</div>
-            <div class="user-section">
-                <div id="userInfo" style="display: none;">
-                    <div class="user-avatar" id="userAvatar"></div>
-                    <div class="user-name" id="userName"></div>
-                    <button class="logout-button" id="logoutBtn">Выйти</button>
-                </div>
-                <button class="login-button" id="loginButton" style="display: none;">Войти</button>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">HOME DJ</div>
+                <a href="https://vk.com/HDJ_vk" target="_blank" id="vk-channel-link" class="vk-channel-link">
+                    <div class="hdj-rectangle">HDJ</div>
+                </a>
             </div>
-        </div>
-
-        <div class="deck-container">
-            <div class="deck" id="deckA">
-                <div class="deck-header">
-                    <div class="deck-title">ДЕКА A</div>
-                    <button class="load-track-btn" id="loadTrackA">Загрузить трек</button>
-                </div>
-                
-                <div class="bpm-display-large" id="bpmLargeA">128.0</div>
-                
-                <div class="track-info">
-                    <div class="track-name" id="trackNameA">Deep House Vibes</div>
-                    <div class="track-artist" id="trackArtistA">Deep House Collective</div>
-                    <div class="track-key" id="trackKeyA">Key: --</div>
-                    <div class="analysis-status" id="analysisStatusA">Статус: Ожидание трека</div>
-                </div>
-                
-                <div class="track-visual-container">
-                    <div class="track-cover" id="trackCoverA">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
-                    </div>
-                    
-                    <div class="waveform" id="waveformA">
-                        <div class="waveform-bars" id="waveformBarsA"></div>
-                        <div class="waveform-progress" id="waveformProgressA"></div>
-                        <div class="time-info">
-                            <span class="current-time" id="currentTimeA">0:00</span>
-                            <span class="total-time" id="totalTimeA">/ 3:45</span>
-                            <span class="remaining-time" id="remainingTimeA">-3:45</span>
+            <div class="color-picker">
+                <div class="color-option active" style="background-color: #FFFF00;" data-color="#FFFF00" data-dark="#CCCC00" data-shadow="rgba(255,255,0,0.5)" data-hover="#FFD700" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
+                <div class="color-option" style="background-color: #FFFFFF;" data-color="#FFFFFF" data-dark="#CCCCCC" data-shadow="rgba(255,255,255,0.5)" data-hover="#E6E6E6" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
+                <div class="color-option" style="background-color: #0000FF;" data-color="#0000FF" data-dark="#0000CC" data-shadow="rgba(0,0,255,0.5)" data-hover="#3333FF" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
+                <div class="color-option" style="background-color: #FF0000;" data-color="#FF0000" data-dark="#CC0000" data-shadow="rgba(255,0,0,0.5)" data-hover="#FF3333" data-cue-playing="#FFFF00" data-cue-shadow="rgba(255,255,0,0.5)"></div>
+            </div>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-name" id="userName"></div>
+                <button class="logout-btn" id="logoutBtn">Выйти</button>
+            </div>
+            <div class="user" id="loginButton">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAzYzEuNjYgMCAzIDEuMzQgMyAzcy0xLjM0IDMtMyAzLTMtMS4zNC0zLTMgMS4zNC0zIDMtM3ptMCAxNC4yYy0yLjUgMC00LjcxLTEuMjgtNi00LjIyLjAzLTIuOTkgNi0zLjAyIDYgNC4yMnptMC0xNy4xN2ExMCAxMCAwIDEwMCAyMCAxMCAxMCAwIDAwLTEwLTEweiIvPjwvc3ZnPg==" alt="User" width="30">
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="deck-panel">
+                <div class="deck" id="deckA">
+                    <div class="deck-inner">
+                        <div class="deck-controls-container">
+                            <button class="deck-load-btn disabled" id="loadTrackA">VK<br>LOAD</button>
+                            <div class="sync-btn-container">
+                                <button class="control-btn" id="syncA">SYNC</button>
+                                <div class="loop-buttons">
+                                    <button class="control-btn loop-btn" data-deck="A" data-beats="4">4</button>
+                                    <button class="control-btn loop-btn" data-deck="A" data-beats="8">8</button>
+                                    <button class="control-btn loop-btn" data-deck="A" data-beats="16">16</button>
+                                </div>
+                                <div class="key-lock-container">
+                                    <button class="control-btn key-lock" id="keyLockA">KEY LOCK</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="deck-main">
+                            <div class="deck-header">
+                                <div class="deck-title">ДЕКА A</div>
+                            </div>
+                            
+                            <div class="bpm-display-large" id="bpmLargeA">128.0</div>
+                            
+                            <div class="track-info">
+                                <div class="track-name" id="trackNameA">Deep House Vibes</div>
+                                <div class="track-artist" id="trackArtistA">Deep House Collective</div>
+                                <div class="track-key" id="trackKeyA">Key: --</div>
+                                <div class="analysis-status" id="analysisStatusA">Статус: Ожидание трека</div>
+                            </div>
+                            
+                            <div class="track-visual-container">
+                                <div class="track-cover" id="trackCoverA">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPkRIPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
+                                </div>
+                                
+                                <div class="waveform" id="waveformA">
+                                    <div class="waveform-container" id="waveformContainerA">
+                                        <div class="waveform-visual">
+                                            <div class="waveform-bars" id="waveformBarsA"></div>
+                                            <div class="waveform-progress" id="waveformProgressA"></div>
+                                        </div>
+                                        <div class="time-info">
+                                            <span class="current-time" id="currentTimeA">0:00</span>
+                                            <span class="total-time" id="totalTimeA">/ 3:45</span>
+                                            <span class="remaining-time" id="remainingTimeA">-3:45</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="vinyl-jog" id="vinylA">
+                                <div class="vinyl-lines"></div>
+                                <div class="vinyl-center">A</div>
+                            </div>
+                        </div>
+                        
+                        <div class="deck-side">
+                            <div class="deck-controls-pitch-vu">
+                                <div class="pitch-slider-vertical">
+                                    <div class="pitch-controls">
+                                        <button class="pitch-btn pitch-increase" data-deck="A">+</button>
+                                        <button class="pitch-btn pitch-decrease" data-deck="A">-</button>
+                                    </div>
+                                    <input type="range" class="slider-vertical" min="-8" max="8" value="0" step="0.1" id="pitchA">
+                                    <div class="pitch-center"></div>
+                                    <div class="pitch-value" id="pitchValueA">+0.0%</div>
+                                </div>
+                                
+                                <div class="vu-meter-container" id="vuMeterA">
+                                    <div class="vu-meter">
+                                        <div class="vu-scale"></div>
+                                        <div class="vu-level" id="vuLevelA"></div>
+                                        <div class="vu-peak" id="vuPeakA"></div>
+                                        <div class="vu-label">VU</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="cue-play-btn-round" id="cuePlayA">▶<br>CUE</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="vinyl-jog" id="vinylA">
-                    <div class="vinyl-lines"></div>
-                    <div class="vinyl-center">A</div>
-                </div>
-                
-                <div class="deck-controls">
-                    <div class="pitch-slider-vertical">
-                        <div class="pitch-controls">
-                            <button class="pitch-btn pitch-increase" data-deck="A">+</button>
-                            <button class="pitch-btn pitch-decrease" data-deck="A">-</button>
+                <div class="deck" id="deckB">
+                    <div class="deck-inner">
+                        <div class="deck-controls-container">
+                            <button class="deck-load-btn disabled" id="loadTrackB">VK<br>LOAD</button>
+                            <div class="sync-btn-container">
+                                <button class="control-btn" id="syncB">SYNC</button>
+                                <div class="loop-buttons">
+                                    <button class="control-btn loop-btn" data-deck="B" data-beats="4">4</button>
+                                    <button class="control-btn loop-btn" data-deck="B" data-beats="8">8</button>
+                                    <button class="control-btn loop-btn" data-deck="B" data-beats="16">16</button>
+                                </div>
+                                <div class="key-lock-container">
+                                    <button class="control-btn key-lock" id="keyLockB">KEY LOCK</button>
+                                </div>
+                            </div>
                         </div>
-                        <input type="range" class="slider-vertical" min="-8" max="8" value="0" step="0.1" id="pitchA">
-                        <div class="pitch-value" id="pitchValueA">+0.0%</div>
+                        <div class="deck-main">
+                            <div class="deck-header">
+                                <div class="deck-title">ДЕКА B</div>
+                            </div>
+                            
+                            <div class="bpm-display-large" id="bpmLargeB">135.0</div>
+                            
+                            <div class="track-info">
+                                <div class="track-name" id="trackNameB">Techno Revolution</div>
+                                <div class="track-artist" id="trackArtistB">Techno Masters</div>
+                                <div class="track-key" id="trackKeyB">Key: --</div>
+                                <div class="analysis-status" id="analysisStatusB">Статус: Ожидание трека</div>
+                            </div>
+                            
+                            <div class="track-visual-container">
+                                <div class="track-cover" id="trackCoverB">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
+                                </div>
+                                
+                                <div class="waveform" id="waveformB">
+                                    <div class="waveform-container" id="waveformContainerB">
+                                        <div class="waveform-visual">
+                                            <div class="waveform-bars" id="waveformBarsB"></div>
+                                            <div class="waveform-progress" id="waveformProgressB"></div>
+                                        </div>
+                                        <div class="time-info">
+                                            <span class="current-time" id="currentTimeB">0:00</span>
+                                            <span class="total-time" id="totalTimeB">/ 4:20</span>
+                                            <span class="remaining-time" id="remainingTimeB">-4:20</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="vinyl-jog" id="vinylB">
+                                <div class="vinyl-lines"></div>
+                                <div class="vinyl-center">B</div>
+                            </div>
+                        </div>
+                        
+                        <div class="deck-side">
+                            <div class="deck-controls-pitch-vu">
+                                <div class="pitch-slider-vertical">
+                                    <div class="pitch-controls">
+                                        <button class="pitch-btn pitch-increase" data-deck="B">+</button>
+                                        <button class="pitch-btn pitch-decrease" data-deck="B">-</button>
+                                    </div>
+                                    <input type="range" class="slider-vertical" min="-8" max="8" value="0" step="0.1" id="pitchB">
+                                    <div class="pitch-center"></div>
+                                    <div class="pitch-value" id="pitchValueB">+0.0%</div>
+                                </div>
+                                
+                                <div class="vu-meter-container" id="vuMeterB">
+                                    <div class="vu-meter">
+                                        <div class="vu-scale"></div>
+                                        <div class="vu-level" id="vuLevelB"></div>
+                                        <div class="vu-peak" id="vuPeakB"></div>
+                                        <div class="vu-label">VU</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="cue-play-btn-round" id="cuePlayB">▶<br>CUE</button>
+                        </div>
                     </div>
-                    
-                    <button class="cue-play-btn-round" id="cuePlayA">▶<br>CUE</button>
                 </div>
             </div>
             
-            <div class="deck" id="deckB">
-                <div class="deck-header">
-                    <div class="deck-title">ДЕКА B</div>
-                    <button class="load-track-btn" id="loadTrackB">Загрузить трек</button>
-                </div>
-                
-                <div class="bpm-display-large" id="bpmLargeB">135.0</div>
-                
-                <div class="track-info">
-                    <div class="track-name" id="trackNameB">Techno Revolution</div>
-                    <div class="track-artist" id="trackArtistB">Techno Masters</div>
-                    <div class="track-key" id="trackKeyB">Key: --</div>
-                    <div class="analysis-status" id="analysisStatusB">Статус: Ожидание трека</div>
-                </div>
-                
-                <div class="track-visual-container">
-                    <div class="track-cover" id="trackCoverB">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
-                    </div>
-                    
-                    <div class="waveform" id="waveformB">
-                        <div class="waveform-bars" id="waveformBarsB"></div>
-                        <div class="waveform-progress" id="waveformProgressB"></div>
-                        <div class="time-info">
-                            <span class="current-time" id="currentTimeB">0:00</span>
-                            <span class="total-time" id="totalTimeB">/ 4:20</span>
-                            <span class="remaining-time" id="remainingTimeB">-4:20</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="vinyl-jog" id="vinylB">
-                    <div class="vinyl-lines"></div>
-                    <div class="vinyl-center">B</div>
-                </div>
-                
-                <div class="deck-controls">
-                    <div class="pitch-slider-vertical">
-                        <div class="pitch-controls">
-                            <button class="pitch-btn pitch-increase" data-deck="B">+</button>
-                            <button class="pitch-btn pitch-decrease" data-deck="B">-</button>
-                        </div>
-                        <input type="range" class="slider-vertical" min="-8" max="8" value="0" step="0.1" id="pitchB">
-                        <div class="pitch-value" id="pitchValueB">+0.0%</div>
-                    </div>
-                    
-                    <button class="cue-play-btn-round" id="cuePlayB">▶<br>CUE</button>
+            <div class="central-crossfader">
+                <div class="crossfader-header">CROSSFADER</div>
+                <input type="range" class="crossfader" min="0" max="100" value="50" id="crossfader">
+            </div>
+            
+            <div class="status-bar">
+                <div class="master-bpm-display">Master: 131.5 BPM</div>
+                <div class="time-display">00:00:00</div>
+                <div class="developer-signature">П.Е.Ю. 2025</div>
+                <div class="connection-status">
+                    <div class="status-indicator" id="statusIndicator"></div>
+                    <span id="statusText">Connected</span>
                 </div>
             </div>
         </div>
         
-        <div class="central-crossfader">
-            <div class="crossfader-header">CROSSFADER</div>
-            <input type="range" class="crossfader" min="0" max="100" value="50" id="crossfader">
+        <div class="playlist-modal" id="playlistModal">
+            <div class="playlist-content">
+                <button class="close-modal" id="closeModal">&times;</button>
+                <h2 class="playlist-title">Мои аудиозаписи ВК</h2>
+                <ul class="playlist-tracks" id="playlistTracks">
+                    <li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>
+                </ul>
+            </div>
         </div>
         
-        <div class="status-bar">
-            <div class="master-bpm-display">Master: 131.5 BPM</div>
-            <div class="time-display">00:00:00</div>
-            <div class="developer-signature">П.Е.Ю. 2025</div>
-            <div class="connection-status">
-                <div class="status-indicator" id="statusIndicator"></div>
-                <span id="statusText">Connected</span>
+        <div class="auth-modal" id="authModal">
+            <div class="auth-content">
+                <h2 class="auth-title">Авторизация</h2>
+                <p class="auth-text">Для доступа к вашим аудиозаписям ВК необходимо войти в ваш аккаунт</p>
+                <button class="auth-button" id="authButton">Войти через VK</button>
             </div>
         </div>
     </div>
-    
-    <div class="modal" id="playlistModal">
-        <div class="modal-content">
-            <button class="close-modal" id="closeModal">&times;</button>
-            <h2 class="playlist-title">Мои аудиозаписи ВК</h2>
-            <ul class="playlist-tracks" id="playlistTracks">
-                <li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>
-            </ul>
-        </div>
-    </div>
-    
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <h2 class="auth-title">Авторизация</h2>
-            <p class="auth-text">Для доступа к вашим аудиозаписям ВК необходимо войти в ваш аккаунт</p>
-            <button class="auth-button" id="authButton">Войти через VK</button>
-        </div>
-    </div>
+
+    <div class="developer-signature-hidden">Разработчик Первушин Е.Ю</div>
 
     <script>
-        // ID вашего приложения VK (замените на свой)
-        const VK_APP_ID = 54153831;
-        
-        // Основные переменные
-        let activeDeck = 'A';
-        let isPlaying = false;
-        let isAuthorized = false;
-        let timerInterval;
-        let seconds = 0;
-        let accessToken = '';
-        
-        const trackData = {
-            A: { 
-                duration: 225, 
-                currentTime: 0, 
-                playing: false, 
-                interval: null, 
-                baseBpm: 128,
-                loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 }
-            },
-            B: { 
-                duration: 260, 
-                currentTime: 0, 
-                playing: false, 
-                interval: null, 
-                baseBpm: 135,
-                loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 }
-            }
-        };
-        
-        // Инициализация приложения
-        function initApp() {
-            // Проверяем, есть ли сохраненный токен
-            const savedToken = localStorage.getItem('vk_access_token');
-            const savedUser = localStorage.getItem('vk_user_data');
-            
-            if (savedToken && savedUser) {
-                try {
-                    accessToken = savedToken;
-                    const userData = JSON.parse(savedUser);
-                    handleAuthSuccess(userData);
-                } catch (e) {
-                    console.error('Ошибка загрузки данных пользователя:', e);
-                    localStorage.removeItem('vk_access_token');
-                    localStorage.removeItem('vk_user_data');
-                    showAuthModal();
-                }
-            } else {
-                showAuthModal();
-            }
-            
-            setupEventListeners();
-            createWaveformBars('A');
-            createWaveformBars('B');
-            updateTimeInfo('A');
-            updateTimeInfo('B');
-        }
-        
-        // Показать модальное окно авторизации
-        function showAuthModal() {
-            document.getElementById('authModal').style.display = 'flex';
-            document.getElementById('loginButton').style.display = 'block';
-            document.getElementById('userInfo').style.display = 'none';
-            isAuthorized = false;
-        }
-        
-        // Настройка обработчиков событий
-        function setupEventListeners() {
-            // Кнопка авторизации
-            document.getElementById('authButton').addEventListener('click', handleVKAuth);
-            
-            // Кнопка выхода
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            
-            // Кнопка входа в интерфейсе
-            document.getElementById('loginButton').addEventListener('click', () => {
-                document.getElementById('authModal').style.display = 'flex';
-            });
-            
-            // Кнопки загрузки треков
-            document.getElementById('loadTrackA').addEventListener('click', () => {
-                if (!isAuthorized) {
-                    document.getElementById('authModal').style.display = 'flex';
-                    return;
-                }
-                activeDeck = 'A';
-                document.getElementById('playlistModal').style.display = 'flex';
-                loadUserAudio();
-            });
-            
-            document.getElementById('loadTrackB').addEventListener('click', () => {
-                if (!isAuthorized) {
-                    document.getElementById('authModal').style.display = 'flex';
-                    return;
-                }
-                activeDeck = 'B';
-                document.getElementById('playlistModal').style.display = 'flex';
-                loadUserAudio();
-            });
-            
-            // Закрытие модальных окон
-            document.getElementById('closeModal').addEventListener('click', () => {
-                document.getElementById('playlistModal').style.display = 'none';
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (e.target === document.getElementById('playlistModal')) {
-                    document.getElementById('playlistModal').style.display = 'none';
-                }
-                if (e.target === document.getElementById('authModal')) {
-                    document.getElementById('authModal').style.display = 'none';
-                }
-            });
-            
-            // Кнопки воспроизведения/паузы
-            document.getElementById('cuePlayA').addEventListener('click', () => {
-                togglePlayPause('A', document.getElementById('cuePlayA'));
-            });
-            
-            document.getElementById('cuePlayB').addEventListener('click', () => {
-                togglePlayPause('B', document.getElementById('cuePlayB'));
-            });
-            
-            // Ползунки pitch
-            document.getElementById('pitchA').addEventListener('input', function() {
-                updatePitchDisplay('A', this.value);
-            });
-            
-            document.getElementById('pitchB').addEventListener('input', function() {
-                updatePitchDisplay('B', this.value);
-            });
-            
-            // Кнопки изменения pitch
-            document.querySelectorAll('.pitch-increase').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    changePitch(this.getAttribute('data-deck'), 'increase');
-                });
-            });
-            
-            document.querySelectorAll('.pitch-decrease').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    changePitch(this.getAttribute('data-deck'), 'decrease');
-                });
-            });
-            
-            // Двойной клик для сброса pitch
-            document.getElementById('pitchA').addEventListener('dblclick', () => {
-                resetPitch('A');
-            });
-            
-            document.getElementById('pitchB').addEventListener('dblclick', () => {
-                resetPitch('B');
-            });
-        }
-        
-        // Авторизация через VK
-        function handleVKAuth() {
-            // Формируем URL для авторизации
-            const authUrl = `https://oauth.vk.com/authorize?client_id=${VK_APP_ID}&display=page&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=audio&response_type=token&v=5.131`;
-            
-            // Открываем окно авторизации
-            const authWindow = window.open(authUrl, 'VK Auth', 'width=600,height=700');
-            
-            // Проверяем результат авторизации каждые 100 мс
-            const checkAuth = setInterval(() => {
-                try {
-                    if (authWindow.closed) {
-                        clearInterval(checkAuth);
-                        return;
-                    }
+        // Основная функция инициализации
+        async function initializeApp() {
+            try {
+                // Инициализируем VK Bridge
+                if (typeof vkBridge !== 'undefined') {
+                    await vkBridge.send('VKWebAppInit', {});
+                    console.log('VK Mini App initialized');
                     
-                    // Пытаемся получить URL из окна авторизации
-                    const url = authWindow.location.href;
+                    document.getElementById('statusIndicator').classList.add('status-connected');
+                    document.getElementById('statusText').textContent = 'Connected to VK';
                     
-                    // Если URL содержит access token
-                    if (url.includes('access_token=')) {
-                        clearInterval(checkAuth);
-                        
-                        // Извлекаем токен из URL
-                        const tokenMatch = url.match(/access_token=([^&]+)/);
-                        const userIdMatch = url.match(/user_id=(\d+)/);
-                        
-                        if (tokenMatch && userIdMatch) {
-                            accessToken = tokenMatch[1];
-                            const userId = userIdMatch[1];
-                            
-                            // Получаем информацию о пользователе
-                            getUserInfo(userId);
-                            authWindow.close();
-                        }
+                    // Пытаемся получить информацию о пользователе
+                    try {
+                        const userInfo = await vkBridge.send('VKWebAppGetUserInfo', {});
+                        handleAuthSuccess(userInfo);
+                    } catch (error) {
+                        console.log('User not authenticated, showing auth modal');
+                        document.getElementById('authModal').style.display = 'block';
                     }
-                } catch (e) {
-                    // Игнорируем ошибки доступа к cross-origin окну
+                } else {
+                    console.log('VK Bridge not available, running in standalone mode');
+                    document.getElementById('authModal').style.display = 'block';
                 }
-            }, 100);
+            } catch (error) {
+                console.error('Initialization error:', error);
+                document.getElementById('authModal').style.display = 'block';
+            }
         }
-        
-        // Получение информации о пользователе
-        function getUserInfo(userId) {
-            const url = `https://api.vk.com/method/users.get?user_ids=${userId}&fields=photo_100&access_token=${accessToken}&v=5.131`;
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.response && data.response.length > 0) {
-                        const user = data.response[0];
-                        handleAuthSuccess(user);
-                    } else {
-                        throw new Error('Не удалось получить информацию о пользователе');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка получения информации о пользователе:', error);
-                    alert('Ошибка авторизации: ' + error.message);
-                });
-        }
-        
+
         // Обработка успешной авторизации
         function handleAuthSuccess(userData) {
             isAuthorized = true;
-            
-            // Сохраняем токен и данные пользователя в localStorage
-            localStorage.setItem('vk_access_token', accessToken);
-            localStorage.setItem('vk_user_data', JSON.stringify(userData));
-            
-            // Обновляем интерфейс
+            window.userData = userData;
             document.getElementById('authModal').style.display = 'none';
-            document.getElementById('userInfo').style.display = 'flex';
-            document.getElementById('loginButton').style.display = 'none';
             
-            document.getElementById('userName').textContent = `${userData.first_name} ${userData.last_name}`;
-            
-            // Устанавливаем аватар
-            const avatarImg = document.createElement('img');
-            avatarImg.src = userData.photo_100;
-            avatarImg.alt = 'Аватар пользователя';
-            document.getElementById('userAvatar').innerHTML = '';
-            document.getElementById('userAvatar').appendChild(avatarImg);
-            
-            // Активируем кнопки загрузки треков
+            updateUserInfo();
             document.getElementById('loadTrackA').classList.remove('disabled');
             document.getElementById('loadTrackB').classList.remove('disabled');
             
-            // Загружаем аудиозаписи
+            // Загружаем аудиозаписи пользователя
             loadUserAudio();
         }
-        
-        // Загрузка аудиозаписей пользователя
-        function loadUserAudio() {
-            if (!accessToken) {
-                document.getElementById('playlistTracks').innerHTML = '<li class="playlist-empty">Ошибка: токен доступа отсутствует</li>';
-                return;
+
+        // Обновление информации о пользователе
+        function updateUserInfo() {
+            if (window.userData) {
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('loginButton').style.display = 'none';
+                
+                document.getElementById('userName').textContent = 
+                    `${window.userData.first_name} ${window.userData.last_name}`;
+                
+                const avatarImg = document.createElement('img');
+                avatarImg.src = window.userData.photo_100 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNZWluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg==';
+                avatarImg.alt = 'User Avatar';
+                document.getElementById('userAvatar').innerHTML = '';
+                document.getElementById('userAvatar').appendChild(avatarImg);
             }
-            
-            document.getElementById('playlistTracks').innerHTML = '<li class="playlist-empty">Загрузка аудиозаписей...</li>';
-            
-            const url = `https://api.vk.com/method/audio.get?access_token=${accessToken}&v=5.131`;
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.response && data.response.items) {
-                        displayTracks(data.response.items);
-                    } else if (data.error) {
-                        throw new Error(data.error.error_msg);
-                    } else {
-                        throw new Error('Неизвестная ошибка при загрузке аудиозаписей');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка загрузки аудиозаписей:', error);
-                    document.getElementById('playlistTracks').innerHTML = `<li class="playlist-empty">Ошибка: ${error.message}</li>`;
-                    
-                    // Если ошибка авторизации, предлагаем войти снова
-                    if (error.message.includes('access') || error.message.includes('auth')) {
-                        handleLogout();
-                    }
-                });
         }
-        
-        // Отображение списка треков
+
+        // Загрузка аудиозаписей пользователя
+        async function loadUserAudio() {
+            try {
+                if (typeof vkBridge !== 'undefined') {
+                    const response = await vkBridge.send('VKWebAppCallAPIMethod', {
+                        method: 'audio.get',
+                        params: {
+                            count: 100,
+                            v: '5.131'
+                        }
+                    });
+                    
+                    if (response && response.response) {
+                        displayTracks(response.response.items);
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } else {
+                    // Демо-режим
+                    const demoTracks = [
+                        {
+                            id: 1,
+                            title: 'Deep House Vibes',
+                            artist: 'Deep House Collective',
+                            duration: 225,
+                        },
+                        {
+                            id: 2,
+                            title: 'Techno Revolution',
+                            artist: 'Techno Masters',
+                            duration: 260,
+                        },
+                        {
+                            id: 3,
+                            title: 'Sunset Lounge',
+                            artist: 'Chillout Band',
+                            duration: 315,
+                        },
+                        {
+                            id: 4,
+                            title: 'Progressive Dreams',
+                            artist: 'Progressive Minds',
+                            duration: 367,
+                        },
+                        {
+                            id: 5,
+                            title: 'Dancefloor Anthem',
+                            artist: 'DJ Supreme',
+                            duration: 278,
+                        }
+                    ];
+                    displayTracks(demoTracks);
+                }
+            } catch (error) {
+                console.error('Error loading audio:', error);
+                document.getElementById('playlistTracks').innerHTML = 
+                    '<li class="playlist-empty">Ошибка загрузки аудиозаписей</li>';
+            }
+        }
+
+        // Отображение треков
         function displayTracks(tracks) {
             const playlistTracks = document.getElementById('playlistTracks');
+            playlistTracks.innerHTML = '';
             
             if (!tracks || tracks.length === 0) {
                 playlistTracks.innerHTML = '<li class="playlist-empty">Аудиозаписи не найдены</li>';
                 return;
             }
-            
-            playlistTracks.innerHTML = '';
             
             tracks.forEach(track => {
                 const li = document.createElement('li');
@@ -988,14 +1395,13 @@
                 li.dataset.title = track.title || 'Без названия';
                 li.dataset.artist = track.artist || 'Неизвестный исполнитель';
                 li.dataset.duration = track.duration || 180;
-                li.dataset.url = track.url || '';
                 
                 // Генерация BPM для демо (в реальном приложении это будет приходить из API)
                 const bpm = Math.floor(Math.random() * 40) + 100;
                 
                 li.innerHTML = `
                     <div class="track-cover-modal">
-                        <img src="${track.album && track.album.thumb ? track.album.thumb : 'https://source.unsplash.com/featured/?music,album&' + Math.random()}" alt="${track.title || 'Трек'}">
+                        <img src="https://source.unsplash.com/featured/?music,album&${Math.random()}" alt="${track.title || 'Трек'}">
                     </div>
                     <div class="track-info-modal">
                         <div class="track-name-modal">${track.title || 'Без названия'}</div>
@@ -1005,230 +1411,891 @@
                 `;
                 
                 li.addEventListener('click', function() {
-                    loadTrackToDeck(this.dataset);
+                    const trackName = this.dataset.title;
+                    const artistName = this.dataset.artist;
+                    const duration = parseInt(this.dataset.duration);
+                    const bpm = parseInt(this.querySelector('.track-bpm').textContent);
+                    const coverUrl = this.querySelector('img').src;
+                    
+                    const durationFormatted = formatTime(duration);
+                    
+                    document.getElementById(`trackName${activeDeck}`).textContent = trackName;
+                    document.getElementById(`trackArtist${activeDeck}`).textContent = artistName;
+                    document.getElementById(`bpmLarge${activeDeck}`).textContent = bpm.toFixed(1);
+                    document.getElementById(`totalTime${activeDeck}`).textContent = `/ ${durationFormatted}`;
+                    
+                    trackData[activeDeck].duration = duration;
+                    trackData[activeDeck].currentTime = 0;
+                    trackData[activeDeck].baseBpm = bpm;
+                    
+                    resetPitch(activeDeck);
+                    
+                    trackData[activeDeck].loop.active = false;
+                    document.querySelectorAll(`.loop-btn[data-deck="${activeDeck}"]`).forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    updateTimeInfo(activeDeck);
+                    analyzeTrack(activeDeck, trackName, artistName, bpm, durationFormatted, coverUrl);
+                    
+                    const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
+                    const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
+                    document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
+                    
+                    document.getElementById('playlistModal').style.display = 'none';
                 });
                 
                 playlistTracks.appendChild(li);
             });
         }
-        
-        // Загрузка трека на дек
-        function loadTrackToDeck(trackData) {
-            const deckId = activeDeck;
-            
-            document.getElementById(`trackName${deckId}`).textContent = trackData.title;
-            document.getElementById(`trackArtist${deckId}`).textContent = trackData.artist;
-            document.getElementById(`bpmLarge${deckId}`).textContent = trackData.bpm || '0.0';
-            document.getElementById(`totalTime${deckId}`).textContent = `/ ${formatTime(trackData.duration)}`;
-            
-            // Обновляем данные трека
-            window.trackData[deckId].duration = parseInt(trackData.duration);
-            window.trackData[deckId].currentTime = 0;
-            window.trackData[deckId].baseBpm = parseFloat(trackData.bpm) || 128;
-            
-            // Сбрасываем pitch
-            resetPitch(deckId);
-            
-            // Обновляем информацию о времени
-            updateTimeInfo(deckId);
-            
-            // Анализируем трек (заглушка)
-            analyzeTrack(deckId, trackData.title, trackData.artist, trackData.bpm, formatTime(trackData.duration));
-            
-            // Закрываем модальное окно
-            document.getElementById('playlistModal').style.display = 'none';
+
+        // Обновленный обработчик авторизации
+        async function initVKAuth() {
+            document.getElementById('authButton').addEventListener('click', async function() {
+                try {
+                    if (typeof vkBridge !== 'undefined') {
+                        const authResult = await vkBridge.send('VKWebAppGetAuthToken', {
+                            app_id: 54153831,
+                            scope: 'audio'
+                        });
+                        
+                        // Получаем информацию о пользователе после авторизации
+                        const userInfo = await vkBridge.send('VKWebAppGetUserInfo', {});
+                        handleAuthSuccess(userInfo);
+                    } else {
+                        // Демо-режим
+                        handleAuthSuccess({
+                            first_name: 'Демо',
+                            last_name: 'Пользователь',
+                            photo_100: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg=='
+                        });
+                    }
+                } catch (error) {
+                    console.error('Auth error:', error);
+                    alert('Ошибка авторизации. Проверьте настройки приложения.');
+                }
+            });
         }
-        
-        // Анализ трека (заглушка)
-        function analyzeTrack(deckId, trackName, artist, bpm, duration) {
-            const analysisStatus = document.getElementById(`analysisStatus${deckId}`);
-            const trackKey = document.getElementById(`trackKey${deckId}`);
-            
-            analysisStatus.textContent = 'Статус: Анализ выполняется...';
-            analysisStatus.style.color = '#4cc9f0';
-            
-            const keys = ['Cm', 'Gm', 'Dm', 'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m', 'Fm'];
-            
-            setTimeout(() => {
-                const randomKey = keys[Math.floor(Math.random() * keys.length)];
-                trackKey.textContent = `Key: ${randomKey}`;
-                analysisStatus.textContent = 'Статус: Анализ завершен';
-                analysisStatus.style.color = '#0f0';
-                createWaveformBars(deckId, 100);
-            }, 2000);
-        }
-        
+
         // Выход из аккаунта
+        function setupLogoutHandler() {
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (typeof vkBridge !== 'undefined') {
+                    vkBridge.send('VKWebAppLogout', {})
+                    .then(data => {
+                        handleLogout();
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        handleLogout();
+                    });
+                } else {
+                    handleLogout();
+                }
+            });
+        }
+
+        // Обработка выхода
         function handleLogout() {
             isAuthorized = false;
-            accessToken = '';
-            
-            // Удаляем сохраненные данные
-            localStorage.removeItem('vk_access_token');
-            localStorage.removeItem('vk_user_data');
-            
-            // Сбрасываем интерфейс
+            window.userData = null;
             document.getElementById('userInfo').style.display = 'none';
             document.getElementById('loginButton').style.display = 'block';
-            document.getElementById('playlistTracks').innerHTML = '<li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>';
             
-            // Деактивируем кнопки загрузки треков
             document.getElementById('loadTrackA').classList.add('disabled');
             document.getElementById('loadTrackB').classList.add('disabled');
             
-            // Показываем окно авторизации
-            document.getElementById('authModal').style.display = 'flex';
+            document.getElementById('playlistTracks').innerHTML = 
+                '<li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>';
         }
-        
-        // Воспроизведение/пауза
-        function togglePlayPause(deckId, button) {
-            if (!trackData[deckId].playing) {
-                button.innerHTML = '❚❚<br>PAUSE';
-                button.classList.add('playing');
-                document.getElementById(`vinyl${deckId}`).classList.add('vinyl-rotating');
-                startPlayback(deckId);
-                
-                if (!isPlaying) {
-                    startTimer();
-                    isPlaying = true;
+
+        // Инициализация при загрузке DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            // Константы и переменные
+            const modal = document.getElementById('playlistModal');
+            const closeBtn = document.getElementById('closeModal');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const crossfader = document.getElementById('crossfader');
+            const vinylA = document.getElementById('vinylA');
+            const vinylB = document.getElementById('vinylB');
+            const cuePlayA = document.getElementById('cuePlayA');
+            const cuePlayB = document.getElementById('cuePlayB');
+            const syncA = document.getElementById('syncA');
+            const syncB = document.getElementById('syncB');
+            const waveformA = document.getElementById('waveformA');
+            const waveformB = document.getElementById('waveformB');
+            const loadTrackA = document.getElementById('loadTrackA');
+            const loadTrackB = document.getElementById('loadTrackB');
+            const waveformContainerA = document.getElementById('waveformContainerA');
+            const waveformContainerB = document.getElementById('waveformContainerB');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const pitchIncreaseBtns = document.querySelectorAll('.pitch-increase');
+            const pitchDecreaseBtns = document.querySelectorAll('.pitch-decrease');
+            const loopButtons = document.querySelectorAll('.loop-btn');
+            const vuLevelA = document.getElementById('vuLevelA');
+            const vuLevelB = document.getElementById('vuLevelB');
+            const vuPeakA = document.getElementById('vuPeakA');
+            const vuPeakB = document.getElementById('vuPeakB');
+            const vuScaleA = document.querySelector('#vuMeterA .vu-scale');
+            const vuScaleB = document.querySelector('#vuMeterB .vu-scale');
+            const trackCoverA = document.querySelector('#trackCoverA img');
+            const trackCoverB = document.querySelector('#trackCoverB img');
+            const vkChannelLink = document.getElementById('vk-channel-link');
+            const hdjRectangle = document.querySelector('.hdj-rectangle');
+            const keyLockA = document.getElementById('keyLockA');
+            const keyLockB = document.getElementById('keyLockB');
+            const authModal = document.getElementById('authModal');
+            const authButton = document.getElementById('authButton');
+            const loginButton = document.getElementById('loginButton');
+            const userInfo = document.getElementById('userInfo');
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const playlistTracks = document.getElementById('playlistTracks');
+            
+            let activeDeck = 'A';
+            let isPlaying = false;
+            let timerInterval;
+            let seconds = 0;
+            let clickTimerA = null;
+            let clickTimerB = null;
+            let vuIntervalA = null;
+            let vuIntervalB = null;
+            let peakLevelA = 0;
+            let peakLevelB = 0;
+            let peakTimeoutA = null;
+            let peakTimeoutB = null;
+            let isAuthorized = false;
+            
+            // Новые переменные для Key Lock и Scratch Mode
+            let keyLockState = { A: false, B: false };
+            let scratchModeState = { A: false, B: false };
+            let isScratching = { A: false, B: false };
+            let originalPitch = { A: 0, B: 0 };
+            
+            const trackData = {
+                A: { 
+                    duration: 225, 
+                    currentTime: 0, 
+                    playing: false, 
+                    interval: null, 
+                    baseBpm: 128, 
+                    loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 },
+                    originalKey: '--',
+                    currentKey: '--'
+                },
+                B: { 
+                    duration: 260, 
+                    currentTime: 0, 
+                    playing: false, 
+                    interval: null, 
+                    baseBpm: 135, 
+                    loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 },
+                    originalKey: '--',
+                    currentKey: '--'
                 }
-            } else {
+            };
+            
+            // Инициализация
+            createWaveformBars('A');
+            createWaveformBars('B');
+            updateTimeInfo('A');
+            updateTimeInfo('B');
+            createVUScale('A');
+            createVUScale('B');
+            
+            // Инициализируем приложение
+            initializeApp();
+            
+            // Инициализируем обработчики событий
+            initVKAuth();
+            setupLogoutHandler();
+            
+            // Запуск мигания кнопки ВК каждые 3 минуты
+            setInterval(function() {
+                hdjRectangle.classList.add('blink-red');
+                setTimeout(function() {
+                    hdjRectangle.classList.remove('blink-red');
+                }, 3000);
+            }, 180000);
+            
+            // Создание шкалы VU-метра
+            function createVUScale(deckId) {
+                const scale = deckId === 'A' ? vuScaleA : vuScaleB;
+                scale.innerHTML = '';
+                
+                for (let i = 0; i <= 10; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'vu-scale-line';
+                    if (i % 2 === 0) line.classList.add('major');
+                    scale.appendChild(line);
+                }
+            }
+            
+            // Обновление VU-метра
+            function updateVUMeter(deckId, level) {
+                const vuLevel = deckId === 'A' ? vuLevelA : vuLevelB;
+                const vuPeak = deckId === 'A' ? vuPeakA : vuPeakB;
+                
+                vuLevel.style.height = `${level}%`;
+                
+                if (level > (deckId === 'A' ? peakLevelA : peakLevelB)) {
+                    if (deckId === 'A') {
+                        peakLevelA = level;
+                        clearTimeout(peakTimeoutA);
+                        peakTimeoutA = setTimeout(() => { peakLevelA = 0; }, 2000);
+                    } else {
+                        peakLevelB = level;
+                        clearTimeout(peakTimeoutB);
+                        peakTimeoutB = setTimeout(() => { peakLevelB = 0; }, 2000);
+                    }
+                }
+                
+                const peakLevel = deckId === 'A' ? peakLevelA : peakLevelB;
+                vuPeak.style.top = `${100 - peakLevel}%`;
+            }
+            
+            // Запуск анимации VU-метра
+            function startVUMeter(deckId) {
+                if (deckId === 'A' && vuIntervalA) clearInterval(vuIntervalA);
+                if (deckId === 'B' && vuIntervalB) clearInterval(vuIntervalB);
+                
+                const interval = setInterval(() => {
+                    const level = Math.min(100, Math.floor(Math.random() * 110));
+                    updateVUMeter(deckId, level);
+                }, 100);
+                
+                if (deckId === 'A') vuIntervalA = interval;
+                else vuIntervalB = interval;
+            }
+            
+            // Остановка анимации VU-метра
+            function stopVUMeter(deckId) {
+                if (deckId === 'A') {
+                    clearInterval(vuIntervalA);
+                    vuIntervalA = null;
+                    updateVUMeter('A', 0);
+                } else {
+                    clearInterval(vuIntervalB);
+                    vuIntervalB = null;
+                    updateVUMeter('B', 0);
+                }
+            }
+            
+            // Функция для Key Lock - сохранение тональности при изменении темпа
+            function toggleKeyLock(deckId) {
+                keyLockState[deckId] = !keyLockState[deckId];
+                const keyLockBtn = document.getElementById(`keyLock${deckId}`);
+                
+                if (keyLockState[deckId]) {
+                    keyLockBtn.classList.add('active');
+                    // Сохраняем оригинальную тональность при включении Key Lock
+                    trackData[deckId].originalKey = trackData[deckId].currentKey;
+                } else {
+                    keyLockBtn.classList.remove('active');
+                    // При выключении Key Lock обновляем тональность в соответствии с текущим pitch
+                    updateKeyBasedOnPitch(deckId);
+                }
+                
+                updateKeyDisplay(deckId);
+            }
+            
+            // Функция для обновления тональности на основе значения pitch
+            function updateKeyBasedOnPitch(deckId) {
+                if (trackData[deckId].originalKey === '--') return;
+                
+                const pitchValue = parseFloat(document.getElementById(`pitch${deckId}`).value);
+                const semitonesChange = Math.round(pitchValue / 6); // 6% pitch ≈ 1 полутон
+                
+                if (semitonesChange === 0) {
+                    trackData[deckId].currentKey = trackData[deckId].originalKey;
+                } else {
+                    const keyMap = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+                    const originalKey = trackData[deckId].originalKey;
+                    const isMinor = originalKey.includes('m');
+                    const baseKey = isMinor ? originalKey.replace('m', '') : originalKey;
+                    
+                    let keyIndex = keyMap.indexOf(baseKey);
+                    if (keyIndex === -1) return;
+                    
+                    let newKeyIndex = (keyIndex + semitonesChange + 12) % 12;
+                    trackData[deckId].currentKey = keyMap[newKeyIndex] + (isMinor ? 'm' : '');
+                }
+                
+                updateKeyDisplay(deckId);
+            }
+            
+            // Функция для обновления отображения тональности
+            function updateKeyDisplay(deckId) {
+                const keyElement = document.getElementById(`trackKey${deckId}`);
+                
+                if (keyLockState[deckId] && !scratchModeState[deckId]) {
+                    // Key Lock включен и не в режиме скретча - показываем оригинальную тональность
+                    keyElement.textContent = `Key: ${trackData[deckId].originalKey} (LOCKED)`;
+                    keyElement.style.color = '#4cc9f0';
+                } else if (scratchModeState[deckId]) {
+                    // Режим скретча - показываем, что Key Lock временно отключен
+                    keyElement.textContent = `Key: ${trackData[deckId].currentKey} (SCRATCH)`;
+                    keyElement.style.color = '#ff0000';
+                } else {
+                    // Key Lock выключен - показываем текущую тональность
+                    keyElement.textContent = `Key: ${trackData[deckId].currentKey}`;
+                    keyElement.style.color = '#4cc9f0';
+                }
+            }
+            
+            // Функция для активации/деактивации режима скретча
+            function toggleScratchMode(deckId, enable) {
+                if (enable) {
+                    // Активация режима скретча
+                    scratchModeState[deckId] = true;
+                    originalPitch[deckId] = parseFloat(document.getElementById(`pitch${deckId}`).value);
+                    
+                    // Сбрасываем pitch к 0 для чистого скретча
+                    document.getElementById(`pitch${deckId}`).value = 0;
+                    document.getElementById(`pitch${deckId}`).dispatchEvent(new Event('input'));
+                    
+                    // Визуальные изменения для индикации режима скретча
+                    document.getElementById(`vinyl${deckId}`).classList.add('scratching');
+                } else {
+                    // Деактивация режима скретча
+                    scratchModeState[deckId] = false;
+                    
+                    // Восстанавливаем оригинальный pitch
+                    document.getElementById(`pitch${deckId}`).value = originalPitch[deckId];
+                    document.getElementById(`pitch${deckId}`).dispatchEvent(new Event('input'));
+                    
+                    // Убираем визуальные индикаторы скретча
+                    document.getElementById(`vinyl${deckId}`).classList.remove('scratching');
+                }
+                
+                updateKeyDisplay(deckId);
+            }
+            
+            // Основные функции
+            function changeColorScheme(color, dark, shadow, hover, cuePlaying, cueShadow) {
+                document.documentElement.style.setProperty('--accent-color', color);
+                document.documentElement.style.setProperty('--accent-dark', dark);
+                document.documentElement.style.setProperty('--accent-shadow', shadow);
+                document.documentElement.style.setProperty('--accent-hover', hover);
+                document.documentElement.style.setProperty('--cue-playing-color', cuePlaying);
+                document.documentElement.style.setProperty('--cue-shadow', cueShadow);
+            }
+            
+            function changePitch(deckId, direction) {
+                const slider = document.getElementById(`pitch${deckId}`);
+                let value = parseFloat(slider.value);
+                
+                if (direction === 'increase') value = Math.min(8, value + 0.1);
+                else if (direction === 'decrease') value = Math.max(-8, value - 0.1);
+                
+                value = Math.round(value * 10) / 10;
+                slider.value = value;
+                slider.dispatchEvent(new Event('input'));
+            }
+            
+            function toggleLoop(deckId, beats) {
+                const data = trackData[deckId];
+                const loopButtons = document.querySelectorAll(`.loop-btn[data-deck="${deckId}"]`);
+                
+                if (data.loop.active && data.loop.beats === beats) {
+                    data.loop.active = false;
+                    loopButtons.forEach(btn => btn.classList.remove('active'));
+                    return;
+                }
+                
+                data.loop.active = true;
+                data.loop.startPoint = data.currentTime;
+                data.loop.beats = beats;
+                
+                const bpm = parseFloat(document.getElementById(`bpmLarge${deckId}`).textContent);
+                const beatDuration = 60 / bpm;
+                data.loop.endPoint = data.loop.startPoint + (beats * beatDuration);
+                
+                loopButtons.forEach(btn => {
+                    btn.classList.toggle('active', parseInt(btn.getAttribute('data-beats')) === beats);
+                });
+            }
+            
+            function createWaveformBars(deckId, intensity = 50) {
+                const container = document.getElementById(`waveformBars${deckId}`);
+                container.innerHTML = '';
+                
+                for (let i = 0; i < intensity; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'waveform-bar';
+                    bar.style.height = `${Math.random() * 70 + 30}%`;
+                    container.appendChild(bar);
+                }
+            }
+            
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+            
+            function updateTimeInfo(deckId) {
+                const data = trackData[deckId];
+                const currentTimeElement = document.getElementById(`currentTime${deckId}`);
+                const remainingTimeElement = document.getElementById(`remainingTime${deckId}`);
+                const progressElement = document.getElementById(`waveformProgress${deckId}`);
+                const waveformContainer = document.getElementById(`waveformContainer${deckId}`);
+                
+                currentTimeElement.textContent = formatTime(data.currentTime);
+                remainingTimeElement.textContent = `-${formatTime(data.duration - data.currentTime)}`;
+                
+                const progressPercent = (data.currentTime / data.duration) * 100;
+                progressElement.style.width = `${progressPercent}%`;
+                
+                if (data.duration - data.currentTime <= 15 && data.duration - data.currentTime > 0) {
+                    waveformContainer.classList.add('warning');
+                } else {
+                    waveformContainer.classList.remove('warning');
+                }
+            }
+            
+            function startPlayback(deckId) {
+                if (trackData[deckId].interval) clearInterval(trackData[deckId].interval);
+                
+                trackData[deckId].playing = true;
+                trackData[deckId].interval = setInterval(() => {
+                    if (trackData[deckId].currentTime < trackData[deckId].duration) {
+                        trackData[deckId].currentTime++;
+                        
+                        if (trackData[deckId].loop.active && trackData[deckId].currentTime >= trackData[deckId].loop.endPoint) {
+                            trackData[deckId].currentTime = trackData[deckId].loop.startPoint;
+                        }
+                        
+                        updateTimeInfo(deckId);
+                        
+                        const bars = document.querySelectorAll(`#waveformBars${deckId} .waveform-bar`);
+                        if (bars.length > 0) {
+                            const randomBar = bars[Math.floor(Math.random() * bars.length)];
+                            randomBar.style.height = `${Math.random() * 70 + 30}%`;
+                        }
+                    } else {
+                        stopPlayback(deckId);
+                    }
+                }, 1000);
+                
+                // Запускаем VU-метр
+                startVUMeter(deckId);
+            }
+            
+            function stopPlayback(deckId) {
+                if (trackData[deckId].interval) {
+                    clearInterval(trackData[deckId].interval);
+                    trackData[deckId].interval = null;
+                }
+                trackData[deckId].playing = false;
+                
+                const waveformContainer = document.getElementById(`waveformContainer${deckId}`);
+                waveformContainer.classList.remove('warning');
+                
+                // Останавливаем VU-метр
+                stopVUMeter(deckId);
+            }
+            
+            function resetTrack(deckId) {
+                stopPlayback(deckId);
+                trackData[deckId].currentTime = 0;
+                trackData[deckId].loop.active = false;
+                
+                document.querySelectorAll(`.loop-btn[data-deck="${deckId}"]`).forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                updateTimeInfo(deckId);
+                
+                const button = document.getElementById(`cuePlay${deckId}`);
                 button.innerHTML = '▶<br>CUE';
                 button.classList.remove('playing');
-                document.getElementById(`vinyl${deckId}`).classList.remove('vinyl-rotating');
-                stopPlayback(deckId);
+                
+                const vinyl = document.getElementById(`vinyl${deckId}`);
+                vinyl.classList.remove('vinyl-rotating');
+                
+                document.getElementById(`waveformProgress${deckId}`).style.width = '0%';
+                
+                const waveformContainer = document.getElementById(`waveformContainer${deckId}`);
+                waveformContainer.classList.remove('warning');
+                
+                // Останавливаем VU-метр
+                stopVUMeter(deckId);
+                
+                // Сбрасываем Key Lock и Scratch Mode
+                keyLockState[deckId] = false;
+                scratchModeState[deckId] = false;
+                document.getElementById(`keyLock${deckId}`).classList.remove('active');
+                document.getElementById(`vinyl${deckId}`).classList.remove('scratching');
+                
+                // Сбрасываем тональность
+                trackData[deckId].originalKey = '--';
+                trackData[deckId].currentKey = '--';
+                document.getElementById(`trackKey${deckId}`).textContent = 'Key: --';
+                document.getElementById(`trackKey${deckId}`).style.color = '#4cc9f0';
             }
-        }
-        
-        // Запуск воспроизведения
-        function startPlayback(deckId) {
-            if (trackData[deckId].interval) clearInterval(trackData[deckId].interval);
             
-            trackData[deckId].playing = true;
-            trackData[deckId].interval = setInterval(() => {
-                if (trackData[deckId].currentTime < trackData[deckId].duration) {
-                    trackData[deckId].currentTime++;
+            function resetPitch(deckId) {
+                const slider = document.getElementById(`pitch${deckId}`);
+                slider.value = 0;
+                slider.dispatchEvent(new Event('input'));
+                
+                const pitchValue = document.getElementById(`pitchValue${deckId}`);
+                pitchValue.style.color = '#0f0';
+                setTimeout(() => pitchValue.style.color = 'var(--accent-color)', 300);
+            }
+            
+            function syncBpm(targetDeckId) {
+                const sourceDeckId = targetDeckId === 'A' ? 'B' : 'A';
+                const sourceBpm = parseFloat(document.getElementById(`bpmLarge${sourceDeckId}`).textContent);
+                const targetBaseBpm = trackData[targetDeckId].baseBpm;
+                const requiredPitch = ((sourceBpm - targetBaseBpm) / targetBaseBpm) * 100;
+                
+                const pitchSlider = document.getElementById(`pitch${targetDeckId}`);
+                pitchSlider.value = Math.max(-8, Math.min(8, requiredPitch));
+                pitchSlider.dispatchEvent(new Event('input'));
+                
+                document.getElementById(`sync${targetDeckId}`).classList.add('active');
+                setTimeout(() => document.getElementById(`sync${targetDeckId}`).classList.remove('active'), 1000);
+            }
+            
+            function analyzeTrack(deckId, trackName, artist, bpm, duration, coverUrl) {
+                const analysisStatus = document.getElementById(`analysisStatus${deckId}`);
+                const trackKey = document.getElementById(`trackKey${deckId}`);
+                
+                analysisStatus.textContent = 'Статус: Анализ выполняется...';
+                analysisStatus.style.color = '#4cc9f0';
+                
+                const keys = ['Cm', 'Gm', 'Dm', 'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m', 'D#m', 'A#m', 'Fm'];
+                
+                setTimeout(() => {
+                    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                    trackData[deckId].originalKey = randomKey;
+                    trackData[deckId].currentKey = randomKey;
+                    trackKey.textContent = `Key: ${randomKey}`;
+                    analysisStatus.textContent = 'Статус: Анализ завершен';
+                    analysisStatus.style.color = '#0f0';
+                    createWaveformBars(deckId, 100);
                     
-                    if (trackData[deckId].loop.active && trackData[deckId].currentTime >= trackData[deckId].loop.endPoint) {
-                        trackData[deckId].currentTime = trackData[deckId].loop.startPoint;
+                    // Устанавливаем обложку трека
+                    const trackCover = deckId === 'A' ? trackCoverA : trackCoverB;
+                    trackCover.src = coverUrl;
+                    trackCover.alt = `Обложка: ${trackName}`;
+                }, 2000);
+            }
+            
+            function checkLoadProtection(deckId) {
+                const crossfaderValue = parseInt(crossfader.value);
+                
+                // Для деки A: защита срабатывает если трек играет и кроссфейдер в левой позиции (< 30)
+                if (deckId === 'A' && trackData['A'].playing && crossfaderValue < 30) {
+                    return true;
+                }
+                
+                // Для деки B: защита срабатывает если трек играет и кроссфейдер в правой позиции (> 70)
+                if (deckId === 'B' && trackData['B'].playing && crossfaderValue > 70) {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            // Функция мигания кнопки
+            function blinkButton(button) {
+                button.classList.add('blink-warning');
+                setTimeout(() => {
+                    button.classList.remove('blink-warning');
+                }, 1500);
+            }
+            
+            function togglePlayPause(deckId, button) {
+                const vinyl = document.getElementById(`vinyl${deckId}`);
+                
+                if (!trackData[deckId].playing) {
+                    button.innerHTML = '❚❚<br>PAUSE';
+                    button.classList.add('playing');
+                    vinyl.classList.add('vinyl-rotating');
+                    startPlayback(deckId);
+                    
+                    if (!isPlaying) {
+                        startTimer();
+                        isPlaying = true;
                     }
-                    
-                    updateTimeInfo(deckId);
                 } else {
+                    button.innerHTML = '▶<br>CUE';
+                    button.classList.remove('playing');
+                    vinyl.classList.remove('vinyl-rotating');
                     stopPlayback(deckId);
                 }
-            }, 1000);
-        }
-        
-        // Остановка воспроизведения
-        function stopPlayback(deckId) {
-            if (trackData[deckId].interval) {
-                clearInterval(trackData[deckId].interval);
-                trackData[deckId].interval = null;
             }
-            trackData[deckId].playing = false;
-        }
-        
-        // Создание визуализации волновой формы
-        function createWaveformBars(deckId, intensity = 50) {
-            const container = document.getElementById(`waveformBars${deckId}`);
-            container.innerHTML = '';
             
-            for (let i = 0; i < intensity; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'waveform-bar';
-                bar.style.height = `${Math.random() * 70 + 30}%`;
-                container.appendChild(bar);
-            }
-        }
-        
-        // Обновление информации о времени
-        function updateTimeInfo(deckId) {
-            const data = trackData[deckId];
-            const currentTimeElement = document.getElementById(`currentTime${deckId}`);
-            const remainingTimeElement = document.getElementById(`remainingTime${deckId}`);
-            const progressElement = document.getElementById(`waveformProgress${deckId}`);
-            
-            currentTimeElement.textContent = formatTime(data.currentTime);
-            remainingTimeElement.textContent = `-${formatTime(data.duration - data.currentTime)}`;
-            
-            const progressPercent = (data.currentTime / data.duration) * 100;
-            progressElement.style.width = `${progressPercent}%`;
-        }
-        
-        // Форматирование времени
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-        
-        // Изменение pitch
-        function changePitch(deckId, direction) {
-            const slider = document.getElementById(`pitch${deckId}`);
-            let value = parseFloat(slider.value);
-            
-            if (direction === 'increase') value = Math.min(8, value + 0.1);
-            else if (direction === 'decrease') value = Math.max(-8, value - 0.1);
-            
-            value = Math.round(value * 10) / 10;
-            slider.value = value;
-            slider.dispatchEvent(new Event('input'));
-        }
-        
-        // Обновление отображения pitch
-        function updatePitchDisplay(deckId, value) {
-            const bpmDisplay = document.getElementById(`bpmLarge${deckId}`);
-            const pitchDisplay = document.getElementById(`pitchValue${deckId}`);
-            
-            const baseBpm = trackData[deckId].baseBpm;
-            const pitchValue = parseFloat(value);
-            const newBpm = baseBpm + (baseBpm * pitchValue / 100);
-            
-            bpmDisplay.textContent = newBpm.toFixed(1);
-            pitchDisplay.textContent = (pitchValue > 0 ? '+' : '') + pitchValue.toFixed(1) + '%';
-            
-            // Обновляем мастер BPM
-            const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
-            const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
-            document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
-        }
-        
-        // Сброс pitch
-        function resetPitch(deckId) {
-            const slider = document.getElementById(`pitch${deckId}`);
-            slider.value = 0;
-            slider.dispatchEvent(new Event('input'));
-            
-            const pitchValue = document.getElementById(`pitchValue${deckId}`);
-            pitchValue.style.color = '#0f0';
-            setTimeout(() => pitchValue.style.color = 'var(--accent-color)', 300);
-        }
-        
-        // Запуск таймера
-        function startTimer() {
-            clearInterval(timerInterval);
-            seconds = 0;
-            updateTimer();
-            
-            timerInterval = setInterval(() => {
-                seconds++;
+            function startTimer() {
+                clearInterval(timerInterval);
+                seconds = 0;
                 updateTimer();
-            }, 1000);
-        }
-        
-        // Обновление таймера
-        function updateTimer() {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
+                
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    updateTimer();
+                }, 1000);
+            }
             
-            document.querySelector('.time-display').textContent = 
-                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', initApp);
+            function updateTimer() {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                
+                document.querySelector('.time-display').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            // Обработчики событий
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    changeColorScheme(
+                        this.getAttribute('data-color'),
+                        this.getAttribute('data-dark'),
+                        this.getAttribute('data-shadow'),
+                        this.getAttribute('data-hover'),
+                        this.getAttribute('data-cue-playing'),
+                        this.getAttribute('data-cue-shadow')
+                    );
+                });
+            });
+            
+            pitchIncreaseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    changePitch(this.getAttribute('data-deck'), 'increase');
+                });
+            });
+            
+            pitchDecreaseBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    changePitch(this.getAttribute('data-deck'), 'decrease');
+                });
+            });
+            
+            loopButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    toggleLoop(this.getAttribute('data-deck'), parseInt(this.getAttribute('data-beats')));
+                });
+            });
+            
+            // Обработчики для Key Lock
+            keyLockA.addEventListener('click', () => toggleKeyLock('A'));
+            keyLockB.addEventListener('click', () => toggleKeyLock('B'));
+            
+            // Обработчики для Scratch Mode (джоги)
+            vinylA.addEventListener('mousedown', () => {
+                isScratching.A = true;
+                toggleScratchMode('A', true);
+            });
+            
+            vinylA.addEventListener('mouseup', () => {
+                isScratching.A = false;
+                toggleScratchMode('A', false);
+            });
+            
+            vinylB.addEventListener('mousedown', () => {
+                isScratching.B = true;
+                toggleScratchMode('B', true);
+            });
+            
+            vinylB.addEventListener('mouseup', () => {
+                isScratching.B = false;
+                toggleScratchMode('B', false);
+            });
+            
+            // Обработка движения джоги для скретча
+            vinylA.addEventListener('mousemove', (e) => {
+                if (isScratching.A) {
+                    // Симуляция эффекта скретча - изменение скорости проигрывания
+                    const rect = vinylA.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const sensitivity = 0.5;
+                    
+                    if (trackData['A'].playing) {
+                        const direction = e.clientX > centerX ? 1 : -1;
+                        const speed = Math.abs(e.clientX - centerX) / (rect.width / 2) * sensitivity;
+                        
+                        // Ускорение или замедление воспроизведения в зависимости от движения
+                        if (trackData['A'].interval) {
+                            clearInterval(trackData['A'].interval);
+                        }
+                        
+                        trackData['A'].interval = setInterval(() => {
+                            trackData['A'].currentTime += direction * speed;
+                            if (trackData['A'].currentTime < 0) trackData['A'].currentTime = 0;
+                            if (trackData['A'].currentTime > trackData['A'].duration) trackData['A'].currentTime = trackData['A'].duration;
+                            
+                            updateTimeInfo('A');
+                        }, 100);
+                    }
+                }
+            });
+            
+            vinylB.addEventListener('mousemove', (e) => {
+                if (isScratching.B) {
+                    // Симуляция эффекта скретча - изменение скорости проигрывания
+                    const rect = vinylB.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const sensitivity = 0.5;
+                    
+                    if (trackData['B'].playing) {
+                        const direction = e.clientX > centerX ? 1 : -1;
+                        const speed = Math.abs(e.clientX - centerX) / (rect.width / 2) * sensitivity;
+                        
+                        // Ускорение или замедление воспроизведения в зависимости от движения
+                        if (trackData['B'].interval) {
+                            clearInterval(trackData['B'].interval);
+                        }
+                        
+                        trackData['B'].interval = setInterval(() => {
+                            trackData['B'].currentTime += direction * speed;
+                            if (trackData['B'].currentTime < 0) trackData['B'].currentTime = 0;
+                            if (trackData['B'].currentTime > trackData['B'].duration) trackData['B'].currentTime = trackData['B'].duration;
+                            
+                            updateTimeInfo('B');
+                        }, 100);
+                    }
+                }
+            });
+            
+            loadTrackA.addEventListener('click', function() {
+                if (!isAuthorized) {
+                    authModal.style.display = 'block';
+                    return;
+                }
+                
+                if (checkLoadProtection('A')) {
+                    blinkButton(this);
+                    return;
+                }
+                
+                activeDeck = 'A';
+                modal.style.display = 'block';
+            });
+            
+            loadTrackB.addEventListener('click', function() {
+                if (!isAuthorized) {
+                    authModal.style.display = 'block';
+                    return;
+                }
+                
+                if (checkLoadProtection('B')) {
+                    blinkButton(this);
+                    return;
+                }
+                
+                activeDeck = 'B';
+                modal.style.display = 'block';
+            });
+            
+            closeBtn.addEventListener('click', () => modal.style.display = 'none');
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) modal.style.display = 'none';
+                if (event.target === authModal) authModal.style.display = 'none';
+            });
+            
+            syncA.addEventListener('click', () => syncBpm('A'));
+            syncB.addEventListener('click', () => syncBpm('B'));
+            
+            waveformA.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                trackData['A'].currentTime = Math.floor((e.clientX - rect.left) / rect.width * trackData['A'].duration);
+                updateTimeInfo('A');
+            });
+            
+            waveformB.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                trackData['B'].currentTime = Math.floor((e.clientX - rect.left) / rect.width * trackData['B'].duration);
+                updateTimeInfo('B');
+            });
+            
+            cuePlayA.addEventListener('click', function() {
+                if (clickTimerA) {
+                    clearTimeout(clickTimerA);
+                    clickTimerA = null;
+                    resetTrack('A');
+                    return;
+                }
+                
+                clickTimerA = setTimeout(() => {
+                    togglePlayPause('A', cuePlayA);
+                    clickTimerA = null;
+                }, 300);
+            });
+            
+            cuePlayB.addEventListener('click', function() {
+                if (clickTimerB) {
+                    clearTimeout(clickTimerB);
+                    clickTimerB = null;
+                    resetTrack('B');
+                    return;
+                }
+                
+                clickTimerB = setTimeout(() => {
+                    togglePlayPause('B', cuePlayB);
+                    clickTimerB = null;
+                }, 300);
+            });
+            
+            document.getElementById('pitchA').addEventListener('dblclick', () => resetPitch('A'));
+            document.getElementById('pitchB').addEventListener('dblclick', () => resetPitch('B'));
+            
+            const pitchSliders = document.querySelectorAll('.slider-vertical');
+            pitchSliders.forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const deckId = this.id.slice(-1);
+                    const bpmDisplay = document.getElementById(`bpmLarge${deckId}`);
+                    const pitchDisplay = document.getElementById(`pitchValue${deckId}`);
+                    const vinyl = document.getElementById(`vinyl${deckId}`);
+                    
+                    const baseBpm = trackData[deckId].baseBpm;
+                    const pitchValue = parseFloat(this.value);
+                    const newBpm = baseBpm + (baseBpm * pitchValue / 100);
+                    
+                    bpmDisplay.textContent = newBpm.toFixed(1);
+                    pitchDisplay.textContent = (pitchValue > 0 ? '+' : '') + pitchValue.toFixed(1) + '%';
+                    
+                    const rotationSpeed = 2 / (1 + Math.abs(pitchValue) / 10);
+                    vinyl.style.animationDuration = `${rotationSpeed}s`;
+                    
+                    const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
+                    const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
+                    document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
+                    
+                    // Обновляем тональность если Key Lock выключен
+                    if (!keyLockState[deckId] && !scratchModeState[deckId]) {
+                        updateKeyBasedOnPitch(deckId);
+                    }
+                });
+            });
+            
+            crossfader.addEventListener('input', function() {
+                const value = this.value;
+                const deckA = document.getElementById('deckA');
+                const deckB = document.getElementById('deckB');
+                
+                if (value < 50) {
+                    deckA.style.opacity = 1;
+                    deckB.style.opacity = 0.5 + (value / 100);
+                } else {
+                    deckA.style.opacity = 1.5 - (value / 100);
+                    deckB.style.opacity = 1;
+                }
+            });
+            
+            window.addEventListener('resize', () => {
+                createWaveformBars('A');
+                createWaveformBars('B');
+            });
+        });
     </script>
 </body>
 </html>
