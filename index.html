@@ -26,12 +26,6 @@
             background-color: #000;
             color: #fff;
             padding: 10px;
-            opacity: 0;
-            animation: startupAnimation 2s forwards;
-        }
-        
-        @keyframes startupAnimation {
-            to { opacity: 1; }
         }
         
         .container { max-width: 100%; }
@@ -47,36 +41,10 @@
             border-radius: 8px;
         }
         
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
         .logo {
             font-size: 24px;
             font-weight: bold;
             color: var(--accent-color);
-        }
-        
-        .vk-channel-link {
-            display: inline-block;
-            text-decoration: none;
-        }
-        
-        .hdj-rectangle {
-            background-color: var(--accent-color);
-            color: #000;
-            padding: 6px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 5px var(--accent-shadow);
-        }
-        
-        @keyframes blinkRed {
-            50% { background-color: #ff0000; }
         }
         
         .color-picker {
@@ -208,7 +176,12 @@
             transition: background-color 0.3s ease;
         }
         
+        .waveform-container.warning {
+            animation: waveform-warning 0.5s infinite alternate;
+        }
+        
         @keyframes waveform-warning {
+            from { background-color: #222; }
             to { background-color: #ff0000; }
         }
         
@@ -277,13 +250,6 @@
             color: var(--accent-color);
             font-weight: bold;
             box-shadow: 0 0 10px var(--accent-shadow);
-            transition: all 0.2s ease;
-            cursor: grab;
-        }
-        
-        .vinyl-jog.scratching {
-            border-color: #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
         }
         
         .vinyl-center {
@@ -332,15 +298,6 @@
         .control-btn.active {
             background-color: #f00;
             color: #fff;
-        }
-        
-        .control-btn.key-lock {
-            background-color: #333;
-        }
-        
-        .control-btn.key-lock.active {
-            background-color: #4cc9f0;
-            color: #000;
         }
         
         .cue-play-btn-round {
@@ -477,6 +434,15 @@
             position: relative;
         }
         
+        .vu-scale-line.major::after {
+            content: '';
+            position: absolute;
+            right: 5px;
+            top: -7px;
+            color: #fff;
+            font-size: 8px;
+        }
+        
         .vu-level {
             width: 100%;
             background: linear-gradient(to top, #00ff00, #ffff00, #ff0000);
@@ -563,12 +529,12 @@
             background-color: var(--accent-hover);
         }
         
-        .deck-load-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .deck-load-btn.error {
+            animation: load-error 0.5s;
         }
         
         @keyframes load-error {
+            0%, 100% { background-color: var(--accent-color); }
             50% { background-color: #f00; }
         }
         
@@ -592,16 +558,11 @@
         .loop-btn {
             padding: 6px 10px;
             font-size: 11px;
-            cursor: pointer;
         }
         
         .loop-btn.active {
             background-color: var(--accent-color);
             color: #000;
-        }
-        
-        .key-lock-container {
-            margin-top: 10px;
         }
         
         .playlist-modal {
@@ -644,29 +605,6 @@
             margin-bottom: 15px;
             text-align: center;
             font-size: 18px;
-            cursor: default;
-        }
-        
-        .playlist-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            justify-content: center;
-        }
-        
-        .playlist-tab {
-            padding: 8px 15px;
-            background-color: #222;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .playlist-tab.active {
-            background-color: var(--accent-color);
-            color: #000;
         }
         
         .playlist-tracks {
@@ -753,13 +691,6 @@
             font-size: 14px;
         }
         
-        .developer-signature {
-            color: #000;
-            font-weight: bold;
-            font-size: 14px;
-            margin-right: 15px;
-        }
-        
         .connection-status {
             display: flex;
             align-items: center;
@@ -783,6 +714,7 @@
         }
         
         @keyframes vinyl-spin {
+            from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
         
@@ -794,7 +726,7 @@
             animation-play-state: paused;
         }
         
-        .developer-signature-hidden {
+        .developer-signature {
             position: absolute;
             opacity: 0.01;
             pointer-events: none;
@@ -806,6 +738,7 @@
         .deck-inner { display: flex; width: 100%; }
         
         @keyframes blink-warning {
+            0%, 100% { background-color: var(--accent-color); }
             50% { background-color: #f00; }
         }
         
@@ -819,99 +752,29 @@
             gap: 10px;
         }
         
-        .auth-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
-        .auth-content {
-            background-color: #111;
-            border-radius: 8px;
-            padding: 30px;
-            max-width: 400px;
-            margin: 100px auto;
-            position: relative;
-            border: 1px solid var(--accent-color);
-            text-align: center;
-        }
-        
-        .auth-title {
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        
-        .auth-text {
-            color: #fff;
-            margin-bottom: 30px;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        
-        .auth-button {
+        .auth-btn {
+            padding: 8px 16px;
             background-color: var(--accent-color);
             color: #000;
             border: none;
-            padding: 12px 24px;
             border-radius: 4px;
-            font-size: 16px;
+            cursor: pointer;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .auth-button:hover {
-            background-color: var(--accent-hover);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid var(--accent-color);
-        }
-        
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .user-name {
-            color: #fff;
-            font-size: 14px;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .logout-btn {
-            background: none;
-            border: none;
-            color: #aaa;
-            cursor: pointer;
-            font-size: 12px;
             margin-left: 10px;
         }
         
-        .logout-btn:hover {
-            color: #fff;
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 4px;
         }
         
         @media (max-width: 768px) {
@@ -995,58 +858,21 @@
             .waveform {
                 width: 100%;
             }
-            
-            .logo-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .status-bar {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
-            
-            .developer-signature {
-                order: 3;
-                margin-right: 0;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .user-info {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .user-name {
-                max-width: 80px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo-container">
-                <div class="logo">HOME DJ</div>
-                <a href="https://vk.com/HDJ_vk" target="_blank" id="vk-channel-link" class="vk-channel-link">
-                    <div class="hdj-rectangle">HDJ</div>
-                </a>
-            </div>
+            <div class="logo">HOME DJ</div>
             <div class="color-picker">
                 <div class="color-option active" style="background-color: #FFFF00;" data-color="#FFFF00" data-dark="#CCCC00" data-shadow="rgba(255,255,0,0.5)" data-hover="#FFD700" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
                 <div class="color-option" style="background-color: #FFFFFF;" data-color="#FFFFFF" data-dark="#CCCCCC" data-shadow="rgba(255,255,255,0.5)" data-hover="#E6E6E6" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
                 <div class="color-option" style="background-color: #0000FF;" data-color="#0000FF" data-dark="#0000CC" data-shadow="rgba(0,0,255,0.5)" data-hover="#3333FF" data-cue-playing="#FF0000" data-cue-shadow="rgba(255,0,0,0.5)"></div>
                 <div class="color-option" style="background-color: #FF0000;" data-color="#FF0000" data-dark="#CC0000" data-shadow="rgba(255,0,0,0.5)" data-hover="#FF3333" data-cue-playing="#FFFF00" data-cue-shadow="rgba(255,255,0,0.5)"></div>
             </div>
-            <div class="user-info" id="userInfo" style="display: none;">
-                <div class="user-avatar" id="userAvatar"></div>
-                <div class="user-name" id="userName"></div>
-                <button class="logout-btn" id="logoutBtn">Выйти</button>
-            </div>
-            <div class="user" id="loginButton">
+            <div class="user">
+                <button class="auth-btn" id="authBtn">Войти в VK</button>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmMCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAzYzEuNjYgMCAzIDEuMzQgMyAzcy0xLjM0IDMtMyAzLTMtMS4zNC0zLTMgMS4zNC0zIDMtM3ptMCAxNC4yYy0yLjUgMC00LjcxLTEuMjgtNi00LjIyLjAzLTIuOTkgNi0zLjAyIDYgNC4yMnptMC0xNy4xN2ExMCAxMCAwIDEwMCAyMCAxMCAxMCAwIDAwLTEwLTEweiIvPjwvc3ZnPg==" alt="User" width="30">
             </div>
         </header>
@@ -1056,16 +882,13 @@
                 <div class="deck" id="deckA">
                     <div class="deck-inner">
                         <div class="deck-controls-container">
-                            <button class="deck-load-btn disabled" id="loadTrackA">VK<br>LOAD</button>
+                            <button class="deck-load-btn" id="loadTrackA">VK<br>LOAD</button>
                             <div class="sync-btn-container">
                                 <button class="control-btn" id="syncA">SYNC</button>
                                 <div class="loop-buttons">
                                     <button class="control-btn loop-btn" data-deck="A" data-beats="4">4</button>
                                     <button class="control-btn loop-btn" data-deck="A" data-beats="8">8</button>
                                     <button class="control-btn loop-btn" data-deck="A" data-beats="16">16</button>
-                                </div>
-                                <div class="key-lock-container">
-                                    <button class="control-btn key-lock" id="keyLockA">KEY LOCK</button>
                                 </div>
                             </div>
                         </div>
@@ -1085,7 +908,7 @@
                             
                             <div class="track-visual-container">
                                 <div class="track-cover" id="trackCoverA">
-                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIg极=" alt="Обложка трека">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
                                 </div>
                                 
                                 <div class="waveform" id="waveformA">
@@ -1123,7 +946,8 @@
                                 
                                 <div class="vu-meter-container" id="vuMeterA">
                                     <div class="vu-meter">
-                                        <div class="vu-scale"></div>
+                                        <div class="vu-scale">
+                                        </div>
                                         <div class="vu-level" id="vuLevelA"></div>
                                         <div class="vu-peak" id="vuPeakA"></div>
                                         <div class="vu-label">VU</div>
@@ -1139,16 +963,13 @@
                 <div class="deck" id="deckB">
                     <div class="deck-inner">
                         <div class="deck-controls-container">
-                            <button class="deck-load-btn disabled" id="loadTrackB">VK<br>LOAD</button>
+                            <button class="deck-load-btn" id="loadTrackB">VK<br>LOAD</button>
                             <div class="sync-btn-container">
                                 <button class="control-btn" id="syncB">SYNC</button>
                                 <div class="loop-buttons">
                                     <button class="control-btn loop-btn" data-deck="B" data-beats="4">4</button>
                                     <button class="control-btn loop-btn" data-deck="B" data-beats="8">8</button>
                                     <button class="control-btn loop-btn" data-deck="B" data-beats="16">16</button>
-                                </div>
-                                <div class="key-lock-container">
-                                    <button class="control-btn key-lock" id="keyLockB">KEY LOCK</button>
                                 </div>
                             </div>
                         </div>
@@ -1168,7 +989,7 @@
                             
                             <div class="track-visual-container">
                                 <div class="track-cover" id="trackCoverB">
-                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQzc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlRDPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg==" alt="Обложка трека">
                                 </div>
                                 
                                 <div class="waveform" id="waveformB">
@@ -1206,7 +1027,8 @@
                                 
                                 <div class="vu-meter-container" id="vuMeterB">
                                     <div class="vu-meter">
-                                        <div class="vu-scale"></div>
+                                        <div class="vu-scale">
+                                        </div>
                                         <div class="vu-level" id="vuLevelB"></div>
                                         <div class="vu-peak" id="vuPeakB"></div>
                                         <div class="vu-label">VU</div>
@@ -1228,10 +1050,9 @@
             <div class="status-bar">
                 <div class="master-bpm-display">Master: 131.5 BPM</div>
                 <div class="time-display">00:00:00</div>
-                <div class="developer-signature">П.Е.Ю. 2025</div>
                 <div class="connection-status">
                     <div class="status-indicator" id="statusIndicator"></div>
-                    <span id="statusText">Connected</span>
+                    <span id="statusText">Not Connected</span>
                 </div>
             </div>
         </div>
@@ -1239,388 +1060,295 @@
         <div class="playlist-modal" id="playlistModal">
             <div class="playlist-content">
                 <button class="close-modal" id="closeModal">&times;</button>
-                <h2 class="playlist-title">Мои аудиозаписи ВК</h2>
+                <h2 class="playlist-title">Мои плейлисты ВК</h2>
+                <div id="playlistMessage"></div>
                 <ul class="playlist-tracks" id="playlistTracks">
-                    <li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>
+                    <!-- Треки будут загружаться сюда -->
                 </ul>
-            </div>
-        </div>
-        
-        <div class="auth-modal" id="authModal">
-            <div class="auth-content">
-                <h2 class="auth-title">Авторизация</h2>
-                <p class="auth-text">Для доступа к вашим аудиозаписям ВК необходимо войти в ваш аккаунт</p>
-                <button class="auth-button" id="authButton">Войти через VK</button>
             </div>
         </div>
     </div>
 
-    <div class="developer-signature-hidden">Разработчик Первушин Е.Ю</div>
+    <div class="developer-signature">Разработчик Первушин Е.Ю</div>
 
     <script>
-        // Константы и переменные
-        const modal = document.getElementById('playlistModal');
-        const closeBtn = document.getElementById('closeModal');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const crossfader = document.getElementById('crossfader');
-        const vinylA = document.getElementById('vinylA');
-        const vinylB = document.getElementById('vinylB');
-        const cuePlayA = document.getElementById('cuePlayA');
-        const cuePlayB = document.getElementById('cuePlayB');
-        const syncA = document.getElementById('syncA');
-        const syncB = document.getElementById('syncB');
-        const waveformA = document.getElementById('waveformA');
-        const waveformB = document.getElementById('waveformB');
-        const loadTrackA = document.getElementById('loadTrackA');
-        const loadTrackB = document.getElementById('loadTrackB');
-        const waveformContainerA = document.getElementById('waveformContainerA');
-        const waveformContainerB = document.getElementById('waveformContainerB');
-        const colorOptions = document.querySelectorAll('.color-option');
-        const pitchIncreaseBtns = document.querySelectorAll('.pitch-increase');
-        const pitchDecreaseBtns = document.querySelectorAll('.pitch-decrease');
-        const loopButtons = document.querySelectorAll('.loop-btn');
-        const vuLevelA = document.getElementById('vuLevelA');
-        const vuLevelB = document.getElementById('vuLevelB');
-        const vuPeakA = document.getElementById('vuPeakA');
-        const vuPeakB = document.getElementById('vuPeakB');
-        const vuScaleA = document.querySelector('#vuMeterA .vu-scale');
-        const vuScaleB = document.querySelector('#vuMeterB .vu-scale');
-        const trackCoverA = document.querySelector('#trackCoverA img');
-        const trackCoverB = document.querySelector('#trackCoverB img');
-        const vkChannelLink = document.getElementById('vk-channel-link');
-        const hdjRectangle = document.querySelector('.hdj-rectangle');
-        const keyLockA = document.getElementById('keyLockA');
-        const keyLockB = document.getElementById('keyLockB');
-        const authModal = document.getElementById('authModal');
-        const authButton = document.getElementById('authButton');
-        const loginButton = document.getElementById('loginButton');
-        const userInfo = document.getElementById('userInfo');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const playlistTracks = document.getElementById('playlistTracks');
-        
-        let activeDeck = 'A';
-        let isPlaying = false;
-        let timerInterval;
-        let seconds = 0;
-        let clickTimerA = null;
-        let clickTimerB = null;
-        let vuIntervalA = null;
-        let vuIntervalB = null;
-        let peakLevelA = 0;
-        let peakLevelB = 0;
-        let peakTimeoutA = null;
-        let peakTimeoutB = null;
-        let isAuthorized = false;
-        
-        // Новые переменные для Key Lock и Scratch Mode
-        let keyLockState = { A: false, B: false };
-        let scratchModeState = { A: false, B: false };
-        let isScratching = { A: false, B: false };
-        let originalPitch = { A: 0, B: 0 };
-        
-        const trackData = {
-            A: { 
-                duration: 225, 
-                currentTime: 0, 
-                playing: false, 
-                interval: null, 
-                baseBpm: 128, 
-                loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 },
-                originalKey: '--',
-                currentKey: '--'
-            },
-            B: { 
-                duration: 260, 
-                currentTime: 0, 
-                playing: false, 
-                interval: null, 
-                baseBpm: 135, 
-                loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 },
-                originalKey: '--',
-                currentKey: '--'
-            }
-        };
-        
-        // Основная функция инициализации
-        async function initializeApp() {
-            try {
-                // Инициализируем VK Bridge
-                if (typeof vkBridge !== 'undefined') {
-                    await vkBridge.send('VKWebAppInit', {});
-                    console.log('VK Mini App initialized');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Константы и переменные
+            const modal = document.getElementById('playlistModal');
+            const closeBtn = document.getElementById('closeModal');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const crossfader = document.getElementById('crossfader');
+            const vinylA = document.getElementById('vinylA');
+            const vinylB = document.getElementById('vinylB');
+            const cuePlayA = document.getElementById('cuePlayA');
+            const cuePlayB = document.getElementById('cuePlayB');
+            const syncA = document.getElementById('syncA');
+            const syncB = document.getElementById('syncB');
+            const waveformA = document.getElementById('waveformA');
+            const waveformB = document.getElementById('waveformB');
+            const loadTrackA = document.getElementById('loadTrackA');
+            const loadTrackB = document.getElementById('loadTrackB');
+            const waveformContainerA = document.getElementById('waveformContainerA');
+            const waveformContainerB = document.getElementById('waveformContainerB');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const pitchIncreaseBtns = document.querySelectorAll('.pitch-increase');
+            const pitchDecreaseBtns = document.querySelectorAll('.pitch-decrease');
+            const loopButtons = document.querySelectorAll('.loop-btn');
+            const vuLevelA = document.getElementById('vuLevelA');
+            const vuLevelB = document.getElementById('vuLevelB');
+            const vuPeakA = document.getElementById('vuPeakA');
+            const vuPeakB = document.getElementById('vuPeakB');
+            const vuScaleA = document.querySelector('#vuMeterA .vu-scale');
+            const vuScaleB = document.querySelector('#vuMeterB .vu-scale');
+            const trackCoverA = document.querySelector('#trackCoverA img');
+            const trackCoverB = document.querySelector('#trackCoverB img');
+            const authBtn = document.getElementById('authBtn');
+            const playlistTracks = document.getElementById('playlistTracks');
+            const playlistMessage = document.getElementById('playlistMessage');
+            
+            let activeDeck = 'A';
+            let isPlaying = false;
+            let timerInterval;
+            let seconds = 0;
+            let clickTimerA = null;
+            let clickTimerB = null;
+            let vuIntervalA = null;
+            let vuIntervalB = null;
+            let peakLevelA = 0;
+            let peakLevelB = 0;
+            let peakTimeoutA = null;
+            let peakTimeoutB = null;
+            let vkAccessToken = null;
+            let vkUserId = null;
+            let isVKConnected = false;
+            
+            const trackData = {
+                A: { duration: 225, currentTime: 0, playing: false, interval: null, baseBpm: 128, loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 } },
+                B: { duration: 260, currentTime: 0, playing: false, interval: null, baseBpm: 135, loop: { active: false, startPoint: 0, endPoint: 0, beats: 0 } }
+            };
+            
+            // Инициализация VK
+            async function initializeVK() {
+                try {
+                    // Инициализируем VK Bridge
+                    await vkBridge.send('VKWebAppInit');
+                    console.log('VK Bridge initialized');
                     
-                    statusIndicator.classList.add('status-connected');
-                    document.getElementById('statusText').textContent = 'Connected to VK';
+                    // Пытаемся получить токен из URL (для мини-приложений)
+                    const urlParams = new URLSearchParams(window.location.hash.slice(1));
+                    const accessToken = urlParams.get('access_token');
                     
-                    // Пытаемся получить информацию о пользователе
-                    try {
-                        const userInfo = await vkBridge.send('VKWebAppGetUserInfo', {});
-                        handleAuthSuccess(userInfo);
-                    } catch (error) {
-                        console.log('User not authenticated, showing auth modal');
-                        authModal.style.display = 'block';
+                    if (accessToken) {
+                        vkAccessToken = accessToken;
+                        await updateUserInfo();
                     }
-                } else {
-                    console.log('VK Bridge not available, running in standalone mode');
-                    authModal.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('VK initialization failed:', error);
+                    updateConnectionStatus(false, 'VK Error');
                 }
-            } catch (error) {
-                console.error('Initialization error:', error);
-                authModal.style.display = 'block';
             }
-        }
-
-        // Обработка успешной авторизации
-        function handleAuthSuccess(userData) {
-            isAuthorized = true;
-            window.userData = userData;
-            authModal.style.display = 'none';
             
-            updateUserInfo();
-            loadTrackA.classList.remove('disabled');
-            loadTrackB.classList.remove('disabled');
-            
-            // Загружаем аудиозаписи пользователя
-            loadUserAudio();
-        }
-
-        // Обновление информации о пользователе
-        function updateUserInfo() {
-            if (window.userData) {
-                userInfo.style.display = 'flex';
-                loginButton.style.display = 'none';
-                
-                userName.textContent = 
-                    `${window.userData.first_name} ${window.userData.last_name}`;
-                
-                const avatarImg = document.createElement('img');
-                avatarImg.src = window.userData.photo_100 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg==';
-                avatarImg.alt = 'User Avatar';
-                userAvatar.innerHTML = '';
-                userAvatar.appendChild(avatarImg);
+            // Обновление информации о пользователе
+            async function updateUserInfo() {
+                try {
+                    const userInfo = await vkBridge.send('VKWebAppGetUserInfo');
+                    vkUserId = userInfo.id;
+                    
+                    updateConnectionStatus(true, 'VK Connected');
+                    authBtn.textContent = 'Выйти';
+                    
+                    console.log('User info loaded:', userInfo);
+                    
+                } catch (error) {
+                    console.error('Failed to get user info:', error);
+                    updateConnectionStatus(false, 'Auth Error');
+                }
             }
-        }
-
-        // Загрузка аудиозаписей пользователя
-        async function loadUserAudio() {
-            try {
-                if (typeof vkBridge !== 'undefined') {
+            
+            // Обновление статуса подключения
+            function updateConnectionStatus(connected, message) {
+                isVKConnected = connected;
+                statusIndicator.classList.toggle('status-connected', connected);
+                document.getElementById('statusText').textContent = message;
+                
+                if (connected) {
+                    loadTrackA.disabled = false;
+                    loadTrackB.disabled = false;
+                    loadTrackA.textContent = "VK\nLOAD";
+                    loadTrackB.textContent = "VK\nLOAD";
+                } else {
+                    loadTrackA.disabled = true;
+                    loadTrackB.disabled = true;
+                    loadTrackA.textContent = "VK\nAUTH";
+                    loadTrackB.textContent = "VK\nAUTH";
+                }
+            }
+            
+            // Авторизация в VK
+            async function authenticateVK() {
+                if (isVKConnected) {
+                    // Выход из системы
+                    try {
+                        await vkBridge.send('VKWebAppLogout');
+                        vkAccessToken = null;
+                        vkUserId = null;
+                        updateConnectionStatus(false, 'Not Connected');
+                        authBtn.textContent = 'Войти в VK';
+                    } catch (error) {
+                        console.error('Logout failed:', error);
+                    }
+                    return;
+                }
+                
+                try {
+                    // Запрос прав доступа к аудио
+                    const tokenData = await vkBridge.send('VKWebAppGetAuthToken', {
+                        app_id: 54158139, // Ваш APP_ID
+                        scope: 'audio'
+                    });
+                    
+                    vkAccessToken = tokenData.access_token;
+                    await updateUserInfo();
+                    
+                } catch (error) {
+                    console.error('Authentication failed:', error);
+                    updateConnectionStatus(false, 'Auth Failed');
+                    
+                    // Показываем сообщение об ошибке
+                    playlistMessage.innerHTML = '<div class="error-message">Ошибка авторизации. Проверьте настройки приложения.</div>';
+                }
+            }
+            
+            // Получение аудиозаписей пользователя
+            async function getUserAudio() {
+                if (!vkAccessToken) {
+                    playlistMessage.innerHTML = '<div class="error-message">Сначала выполните авторизацию в VK</div>';
+                    return [];
+                }
+                
+                try {
+                    playlistMessage.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--accent-color);">Загрузка аудиозаписей...</div>';
+                    
+                    // Используем VK API для получения аудиозаписей
                     const response = await vkBridge.send('VKWebAppCallAPIMethod', {
                         method: 'audio.get',
                         params: {
-                            count: 100,
+                            access_token: vkAccessToken,
                             v: '5.131',
-                            access_token: await vkBridge.send('VKWebAppGetAuthToken', {
-                                app_id: 54158139,
-                                scope: 'audio'
-                            }).then(data => data.access_token)
+                            count: 100,
+                            owner_id: vkUserId
                         }
                     });
                     
-                    if (response && response.response) {
-                        displayTracks(response.response.items);
+                    if (response.response && response.response.items) {
+                        playlistMessage.innerHTML = '';
+                        return response.response.items;
                     } else {
-                        throw new Error('Invalid response format');
+                        playlistMessage.innerHTML = '<div class="error-message">Не удалось загрузить аудиозаписи</div>';
+                        return [];
                     }
-                } else {
-                    // Демо-режим
-                    const demoTracks = [
-                        {
-                            id: 1,
-                            title: 'Deep House Vibes',
-                            artist: 'Deep House Collective',
-                            duration: 225,
-                        },
-                        {
-                            id: 2,
-                            title: 'Techno Revolution',
-                            artist: 'Techno Masters',
-                            duration: 260,
-                        },
-                        {
-                            id: 3,
-                            title: 'Sunset Lounge',
-                            artist: 'Chillout Band',
-                            duration: 315,
-                        },
-                        {
-                            id: 4,
-                            title: 'Progressive Dreams',
-                            artist: 'Progressive Minds',
-                            duration: 367,
-                        },
-                        {
-                            id: 5,
-                            title: 'Dancefloor Anthem',
-                            artist: 'DJ Supreme',
-                            duration: 278,
-                        }
-                    ];
-                    displayTracks(demoTracks);
+                    
+                } catch (error) {
+                    console.error('Error getting audio:', error);
+                    playlistMessage.innerHTML = '<div class="error-message">Ошибка при загрузке аудиозаписей</div>';
+                    return [];
                 }
-            } catch (error) {
-                console.error('Error loading audio:', error);
-                playlistTracks.innerHTML = 
-                    '<li class="playlist-empty">Ошибка загрузки аудиозаписей</li>';
-            }
-        }
-
-        // Отображение треков
-        function displayTracks(tracks) {
-            playlistTracks.innerHTML = '';
-            
-            if (!tracks || tracks.length === 0) {
-                playlistTracks.innerHTML = '<li class="playlist-empty">Аудиозаписи не найдены</li>';
-                return;
             }
             
-            tracks.forEach(track => {
-                const li = document.createElement('li');
-                li.className = 'playlist-track';
-                li.dataset.id = track.id;
-                li.dataset.title = track.title || 'Без названия';
-                li.dataset.artist = track.artist || 'Неизвестный исполнитель';
-                li.dataset.duration = track.duration || 180;
+            // Обновление модального окна с треками из VK
+            async function updatePlaylistModal() {
+                if (!isVKConnected) {
+                    modal.style.display = 'block';
+                    playlistMessage.innerHTML = '<div class="error-message">Сначала выполните авторизацию в VK</div>';
+                    return;
+                }
                 
-                // Генерация BPM для демо (в реальном приложении это будет приходить из API)
-                const bpm = Math.floor(Math.random() * 40) + 100;
+                const audioTracks = await getUserAudio();
                 
-                li.innerHTML = `
-                    <div class="track-cover-modal">
-                        <img src="https://source.unsplash.com/featured/?music,album&${Math.random()}" alt="${track.title || 'Трек'}">
-                    </div>
-                    <div class="track-info-modal">
-                        <div class="track-name-modal">${track.title || 'Без названия'}</div>
-                        <div class="track-artist-modal">${track.artist || 'Неизвестный исполнитель'} · ${formatTime(track.duration || 180)}</div>
-                    </div>
-                    <div class="track-bpm">${bpm}</div>
-                `;
+                if (audioTracks.length === 0) {
+                    playlistTracks.innerHTML = '<li class="playlist-track">Нет доступных аудиозаписей</li>';
+                    return;
+                }
                 
-                li.addEventListener('click', function() {
-                    const trackName = this.dataset.title;
-                    const artistName = this.dataset.artist;
-                    const duration = parseInt(this.dataset.duration);
-                    const bpm = parseInt(this.querySelector('.track-bpm').textContent);
-                    const coverUrl = this.querySelector('img').src;
+                // Очищаем список
+                playlistTracks.innerHTML = '';
+                
+                // Добавляем треки в список
+                audioTracks.forEach((track, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'playlist-track';
+                    li.setAttribute('data-bpm', Math.round(100 + Math.random() * 40)); // Случайный BPM
+                    li.setAttribute('data-artist', track.artist || 'Неизвестный исполнитель');
+                    li.setAttribute('data-duration', formatDuration(track.duration || 180));
+                    li.setAttribute('data-cover', track.album?.thumb?.photo_300 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iMjAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg==');
                     
-                    const durationFormatted = formatTime(duration);
+                    li.innerHTML = `
+                        <div class="track-cover-modal">
+                            <img src="${track.album?.thumb?.photo_300 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iMjAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg=='}" alt="Обложка" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iMjAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg=='">
+                        </div>
+                        <div class="track-info-modal">
+                            <div class="track-name-modal">${track.title || 'Без названия'}</div>
+                            <div class="track-artist-modal">${track.artist || 'Неизвестный исполнитель'} · ${formatDuration(track.duration || 180)}</div>
+                        </div>
+                        <div class="track-bpm">${Math.round(100 + Math.random() * 40)}</div>
+                    `;
                     
-                    document.getElementById(`trackName${activeDeck}`).textContent = trackName;
-                    document.getElementById(`trackArtist${activeDeck}`).textContent = artistName;
-                    document.getElementById(`bpmLarge${activeDeck}`).textContent = bpm.toFixed(1);
-                    document.getElementById(`totalTime${activeDeck}`).textContent = `/ ${durationFormatted}`;
-                    
-                    trackData[activeDeck].duration = duration;
-                    trackData[activeDeck].currentTime = 0;
-                    trackData[activeDeck].baseBpm = bpm;
-                    
-                    resetPitch(activeDeck);
-                    
-                    trackData[activeDeck].loop.active = false;
-                    document.querySelectorAll(`.loop-btn[data-deck="${activeDeck}"]`).forEach(btn => {
-                        btn.classList.remove('active');
+                    li.addEventListener('click', function() {
+                        loadVKTrackToDeck(activeDeck, track);
+                        modal.style.display = 'none';
                     });
                     
-                    updateTimeInfo(activeDeck);
-                    analyzeTrack(activeDeck, trackName, artistName, bpm, durationFormatted, coverUrl);
-                    
-                    const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
-                    const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
-                    document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
-                    
-                    modal.style.display = 'none';
+                    playlistTracks.appendChild(li);
+                });
+            }
+            
+            // Функция для загрузки трека из VK в деку
+            function loadVKTrackToDeck(deckId, track) {
+                const trackName = track.title || 'Без названия';
+                const artistName = track.artist || 'Неизвестный исполнитель';
+                const duration = track.duration || 180;
+                const formattedDuration = formatDuration(duration);
+                const coverUrl = track.album?.thumb?.photo_300 || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIENvdmVyPC90ZXh0Pjwvc3ZnPg==';
+                const estimatedBpm = Math.round(100 + Math.random() * 40);
+                
+                document.getElementById(`trackName${deckId}`).textContent = trackName;
+                document.getElementById(`trackArtist${deckId}`).textContent = artistName;
+                document.getElementById(`bpmLarge${deckId}`).textContent = estimatedBpm.toFixed(1);
+                document.getElementById(`totalTime${deckId}`).textContent = `/ ${formattedDuration}`;
+                
+                trackData[deckId].duration = duration;
+                trackData[deckId].currentTime = 0;
+                trackData[deckId].baseBpm = estimatedBpm;
+                
+                resetPitch(deckId);
+                
+                trackData[deckId].loop.active = false;
+                document.querySelectorAll(`.loop-btn[data-deck="${deckId}"]`).forEach(btn => {
+                    btn.classList.remove('active');
                 });
                 
-                playlistTracks.appendChild(li);
-            });
-        }
-
-        // Обновленный обработчик авторизации
-        async function initVKAuth() {
-            authButton.addEventListener('click', async function() {
-                try {
-                    if (typeof vkBridge !== 'undefined') {
-                        const authResult = await vkBridge.send('VKWebAppGetAuthToken', {
-                            app_id: 54158139,
-                            scope: 'audio'
-                        });
-                        
-                        // Получаем информацию о пользователе после авторизации
-                        const userInfo = await vkBridge.send('VKWebAppGetUserInfo', {});
-                        handleAuthSuccess(userInfo);
-                    } else {
-                        // Демо-режим
-                        handleAuthSuccess({
-                            first_name: 'Демо',
-                            last_name: 'Пользователь',
-                            photo_100: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjZmZmIj48Y2lyY2xlIGN4PSI1MCIgY3k�IjUwIiByPSI1MCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5Vc2VyPC90ZXh0Pjwvc3ZnPg=='
-                        });
-                    }
-                } catch (error) {
-                    console.error('Auth error:', error);
-                    alert('Ошибка авторизации. Проверьте настройки приложения.');
-                }
-            });
-        }
-
-        // Выход из аккаунта
-        function setupLogoutHandler() {
-            logoutBtn.addEventListener('click', function() {
-                if (typeof vkBridge !== 'undefined') {
-                    vkBridge.send('VKWebAppLogout', {})
-                    .then(data => {
-                        handleLogout();
-                    })
-                    .catch(error => {
-                        console.error('Logout error:', error);
-                        handleLogout();
-                    });
-                } else {
-                    handleLogout();
-                }
-            });
-        }
-
-        // Обработка выхода
-        function handleLogout() {
-            isAuthorized = false;
-            window.userData = null;
-            userInfo.style.display = 'none';
-            loginButton.style.display = 'block';
+                updateTimeInfo(deckId);
+                analyzeTrack(deckId, trackName, artistName, estimatedBpm, formattedDuration, coverUrl);
+                
+                const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
+                const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
+                document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
+                
+                // Обновляем обложку
+                const trackCover = deckId === 'A' ? trackCoverA : trackCoverB;
+                trackCover.src = coverUrl;
+                trackCover.alt = `Обложка: ${trackName}`;
+            }
             
-            loadTrackA.classList.add('disabled');
-            loadTrackB.classList.add('disabled');
+            // Функция форматирования длительности из секунд в мм:сс
+            function formatDuration(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
             
-            playlistTracks.innerHTML = 
-                '<li class="playlist-empty">Войдите в VK, чтобы загрузить ваши аудиозаписи</li>';
-        }
-        
-        // Инициализация при загрузке DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация
-            createWaveformBars('A');
-            createWaveformBars('B');
-            updateTimeInfo('A');
-            updateTimeInfo('B');
-            createVUScale('A');
-            createVUScale('B');
-            
-            // Инициализируем приложение
-            initializeApp();
-            initVKAuth();
-            setupLogoutHandler();
-            
-            // Запуск мигания кнопки ВК каждые 3 минуты
-            setInterval(function() {
-                hdjRectangle.classList.add('blink-red');
-                setTimeout(function() {
-                    hdjRectangle.classList.remove('blink-red');
-                }, 3000);
-            }, 180000);
-            
-            // Создание шкалы VU-метра
+            // Остальные функции из вашего оригинального кода
             function createVUScale(deckId) {
                 const scale = deckId === 'A' ? vuScaleA : vuScaleB;
                 scale.innerHTML = '';
@@ -1628,12 +1356,15 @@
                 for (let i = 0; i <= 10; i++) {
                     const line = document.createElement('div');
                     line.className = 'vu-scale-line';
-                    if (i % 2 === 0) line.classList.add('major');
+                    
+                    if (i % 2 === 0) {
+                        line.classList.add('major');
+                    }
+                    
                     scale.appendChild(line);
                 }
             }
             
-            // Обновление VU-метра
             function updateVUMeter(deckId, level) {
                 const vuLevel = deckId === 'A' ? vuLevelA : vuLevelB;
                 const vuPeak = deckId === 'A' ? vuPeakA : vuPeakB;
@@ -1656,7 +1387,6 @@
                 vuPeak.style.top = `${100 - peakLevel}%`;
             }
             
-            // Запуск анимации VU-метра
             function startVUMeter(deckId) {
                 if (deckId === 'A' && vuIntervalA) clearInterval(vuIntervalA);
                 if (deckId === 'B' && vuIntervalB) clearInterval(vuIntervalB);
@@ -1666,11 +1396,13 @@
                     updateVUMeter(deckId, level);
                 }, 100);
                 
-                if (deckId === 'A') vuIntervalA = interval;
-                else vuIntervalB = interval;
+                if (deckId === 'A') {
+                    vuIntervalA = interval;
+                } else {
+                    vuIntervalB = interval;
+                }
             }
             
-            // Остановка анимации VU-метра
             function stopVUMeter(deckId) {
                 if (deckId === 'A') {
                     clearInterval(vuIntervalA);
@@ -1683,97 +1415,6 @@
                 }
             }
             
-            // Функция для Key Lock - сохранение тональности при изменении темпа
-            function toggleKeyLock(deckId) {
-                keyLockState[deckId] = !keyLockState[deckId];
-                const keyLockBtn = document.getElementById(`keyLock${deckId}`);
-                
-                if (keyLockState[deckId]) {
-                    keyLockBtn.classList.add('active');
-                    // Сохраняем оригинальную тональность при включении Key Lock
-                    trackData[deckId].originalKey = trackData[deckId].currentKey;
-                } else {
-                    keyLockBtn.classList.remove('active');
-                    // При выключении Key Lock обновляем тональность в соответствии с текущим pitch
-                    updateKeyBasedOnPitch(deckId);
-                }
-                
-                updateKeyDisplay(deckId);
-            }
-            
-            // Функция для обновления тональности на основе значения pitch
-            function updateKeyBasedOnPitch(deckId) {
-                if (trackData[deckId].originalKey === '--') return;
-                
-                const pitchValue = parseFloat(document.getElementById(`pitch${deckId}`).value);
-                const semitonesChange = Math.round(pitchValue / 6); // 6% pitch ≈ 1 полутон
-                
-                if (semitonesChange === 0) {
-                    trackData[deckId].currentKey = trackData[deckId].originalKey;
-                } else {
-                    const keyMap = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-                    const originalKey = trackData[deckId].originalKey;
-                    const isMinor = originalKey.includes('m');
-                    const baseKey = isMinor ? originalKey.replace('m', '') : originalKey;
-                    
-                    let keyIndex = keyMap.indexOf(baseKey);
-                    if (keyIndex === -1) return;
-                    
-                    let newKeyIndex = (keyIndex + semitonesChange + 12) % 12;
-                    trackData[deckId].currentKey = keyMap[newKeyIndex] + (isMinor ? 'm' : '');
-                }
-                
-                updateKeyDisplay(deckId);
-            }
-            
-            // Функция для обновления отображения тональности
-            function updateKeyDisplay(deckId) {
-                const keyElement = document.getElementById(`trackKey${deckId}`);
-                
-                if (keyLockState[deckId] && !scratchModeState[deckId]) {
-                    // Key Lock включен и не в режиме скретча - показываем оригинальную тональность
-                    keyElement.textContent = `Key: ${trackData[deckId].originalKey} (LOCKED)`;
-                    keyElement.style.color = '#4cc9f0';
-                } else if (scratchModeState[deckId]) {
-                    // Режим скретча - показываем, что Key Lock временно отключен
-                    keyElement.textContent = `Key: ${trackData[deckId].currentKey} (SCRATCH)`;
-                    keyElement.style.color = '#ff0000';
-                } else {
-                    // Key Lock выключен - показываем текущую тональность
-                    keyElement.textContent = `Key: ${trackData[deckId].currentKey}`;
-                    keyElement.style.color = '#4cc9f0';
-                }
-            }
-            
-            // Функция для активации/деактивации режима скретча
-            function toggleScratchMode(deckId, enable) {
-                if (enable) {
-                    // Активация режима скретча
-                    scratchModeState[deckId] = true;
-                    originalPitch[deckId] = parseFloat(document.getElementById(`pitch${deckId}`).value);
-                    
-                    // Сбрасываем pitch к 0 для чистого скретча
-                    document.getElementById(`pitch${deckId}`).value = 0;
-                    document.getElementById(`pitch${deckId}`).dispatchEvent(new Event('input'));
-                    
-                    // Визуальные изменения для индикации режима скретча
-                    document.getElementById(`vinyl${deckId}`).classList.add('scratching');
-                } else {
-                    // Деактивация режима скретча
-                    scratchModeState[deckId] = false;
-                    
-                    // Восстанавливаем оригинальный pitch
-                    document.getElementById(`pitch${deckId}`).value = originalPitch[deckId];
-                    document.getElementById(`pitch${deckId}`).dispatchEvent(new Event('input'));
-                    
-                    // Убираем визуальные индикаторы скретча
-                    document.getElementById(`vinyl${deckId}`).classList.remove('scratching');
-                }
-                
-                updateKeyDisplay(deckId);
-            }
-            
-            // Основные функции
             function changeColorScheme(color, dark, shadow, hover, cuePlaying, cueShadow) {
                 document.documentElement.style.setProperty('--accent-color', color);
                 document.documentElement.style.setProperty('--accent-dark', dark);
@@ -1880,7 +1521,6 @@
                     }
                 }, 1000);
                 
-                // Запускаем VU-метр
                 startVUMeter(deckId);
             }
             
@@ -1894,7 +1534,6 @@
                 const waveformContainer = document.getElementById(`waveformContainer${deckId}`);
                 waveformContainer.classList.remove('warning');
                 
-                // Останавливаем VU-метр
                 stopVUMeter(deckId);
             }
             
@@ -1921,20 +1560,7 @@
                 const waveformContainer = document.getElementById(`waveformContainer${deckId}`);
                 waveformContainer.classList.remove('warning');
                 
-                // Останавливаем VU-метр
                 stopVUMeter(deckId);
-                
-                // Сбрасываем Key Lock и Scratch Mode
-                keyLockState[deckId] = false;
-                scratchModeState[deckId] = false;
-                document.getElementById(`keyLock${deckId}`).classList.remove('active');
-                document.getElementById(`vinyl${deckId}`).classList.remove('scratching');
-                
-                // Сбрасываем тональность
-                trackData[deckId].originalKey = '--';
-                trackData[deckId].currentKey = '--';
-                document.getElementById(`trackKey${deckId}`).textContent = 'Key: --';
-                document.getElementById(`trackKey${deckId}`).style.color = '#4cc9f0';
             }
             
             function resetPitch(deckId) {
@@ -1972,29 +1598,20 @@
                 
                 setTimeout(() => {
                     const randomKey = keys[Math.floor(Math.random() * keys.length)];
-                    trackData[deckId].originalKey = randomKey;
-                    trackData[deckId].currentKey = randomKey;
                     trackKey.textContent = `Key: ${randomKey}`;
                     analysisStatus.textContent = 'Статус: Анализ завершен';
                     analysisStatus.style.color = '#0f0';
                     createWaveformBars(deckId, 100);
-                    
-                    // Устанавливаем обложку трека
-                    const trackCover = deckId === 'A' ? trackCoverA : trackCoverB;
-                    trackCover.src = coverUrl;
-                    trackCover.alt = `Обложка: ${trackName}`;
                 }, 2000);
             }
             
             function checkLoadProtection(deckId) {
                 const crossfaderValue = parseInt(crossfader.value);
                 
-                // Для деки A: защита срабатывает если трек играет и кроссфейдер в левой позиции (< 30)
                 if (deckId === 'A' && trackData['A'].playing && crossfaderValue < 30) {
                     return true;
                 }
                 
-                // Для деки B: защита срабатывает если трек играет и кроссфейдер в правой позиции (> 70)
                 if (deckId === 'B' && trackData['B'].playing && crossfaderValue > 70) {
                     return true;
                 }
@@ -2002,7 +1619,6 @@
                 return false;
             }
             
-            // Функция мигания кнопки
             function blinkButton(button) {
                 button.classList.add('blink-warning');
                 setTimeout(() => {
@@ -2051,6 +1667,15 @@
                     `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
             }
             
+            // Инициализация
+            createWaveformBars('A');
+            createWaveformBars('B');
+            updateTimeInfo('A');
+            updateTimeInfo('B');
+            createVUScale('A');
+            createVUScale('B');
+            initializeVK();
+            
             // Обработчики событий
             colorOptions.forEach(option => {
                 option.addEventListener('click', function() {
@@ -2086,121 +1711,36 @@
                 });
             });
             
-            // Обработчики для Key Lock
-            keyLockA.addEventListener('click', () => toggleKeyLock('A'));
-            keyLockB.addEventListener('click', () => toggleKeyLock('B'));
-            
-            // Обработчики для Scratch Mode (джоги)
-            vinylA.addEventListener('mousedown', () => {
-                isScratching.A = true;
-                toggleScratchMode('A', true);
-            });
-            
-            vinylA.addEventListener('mouseup', () => {
-                isScratching.A = false;
-                toggleScratchMode('A', false);
-            });
-            
-            vinylB.addEventListener('mousedown', () => {
-                isScratching.B = true;
-                toggleScratchMode('B', true);
-            });
-            
-            vinylB.addEventListener('mouseup', () => {
-                isScratching.B = false;
-                toggleScratchMode('B', false);
-            });
-            
-            // Обработка движения джоги для скретча
-            vinylA.addEventListener('mousemove', (e) => {
-                if (isScratching.A) {
-                    // Симуляция эффекта скретча - изменение скорости проигрывания
-                    const rect = vinylA.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const sensitivity = 0.5;
-                    
-                    if (trackData['A'].playing) {
-                        const direction = e.clientX > centerX ? 1 : -1;
-                        const speed = Math.abs(e.clientX - centerX) / (rect.width / 2) * sensitivity;
-                        
-                        // Ускорение или замедление воспроизведения в зависимости от движения
-                        if (trackData['A'].interval) {
-                            clearInterval(trackData['A'].interval);
-                        }
-                        
-                        trackData['A'].interval = setInterval(() => {
-                            trackData['A'].currentTime += direction * speed;
-                            if (trackData['A'].currentTime < 0) trackData['A'].currentTime = 0;
-                            if (trackData['A'].currentTime > trackData['A'].duration) trackData['A'].currentTime = trackData['A'].duration;
-                            
-                            updateTimeInfo('A');
-                        }, 100);
-                    }
-                }
-            });
-            
-            vinylB.addEventListener('mousemove', (e) => {
-                if (isScratching.B) {
-                    // Симуляция эффекта скретча - изменение скорости проигрывания
-                    const rect = vinylB.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const sensitivity = 0.5;
-                    
-                    if (trackData['B'].playing) {
-                        const direction = e.clientX > centerX ? 1 : -1;
-                        const speed = Math.abs(e.clientX - centerX) / (rect.width / 2) * sensitivity;
-                        
-                        // Ускорение или замедление воспроизведения в зависимости от движения
-                        if (trackData['B'].interval) {
-                            clearInterval(trackData['B'].interval);
-                        }
-                        
-                        trackData['B'].interval = setInterval(() => {
-                            trackData['B'].currentTime += direction * speed;
-                            if (trackData['B'].currentTime < 0) trackData['B'].currentTime = 0;
-                            if (trackData['B'].currentTime > trackData['B'].duration) trackData['B'].currentTime = trackData['B'].duration;
-                            
-                            updateTimeInfo('B');
-                        }, 100);
-                    }
-                }
-            });
+            authBtn.addEventListener('click', authenticateVK);
             
             loadTrackA.addEventListener('click', function() {
-                if (!isAuthorized) {
-                    authModal.style.display = 'block';
-                    return;
-                }
-                
                 if (checkLoadProtection('A')) {
                     blinkButton(this);
                     return;
                 }
                 
                 activeDeck = 'A';
-                modal.style.display = 'block';
+                updatePlaylistModal().then(() => {
+                    modal.style.display = 'block';
+                });
             });
             
             loadTrackB.addEventListener('click', function() {
-                if (!isAuthorized) {
-                    authModal.style.display = 'block';
-                    return;
-                }
-                
                 if (checkLoadProtection('B')) {
                     blinkButton(this);
                     return;
                 }
                 
                 activeDeck = 'B';
-                modal.style.display = 'block';
+                updatePlaylistModal().then(() => {
+                    modal.style.display = 'block';
+                });
             });
             
             closeBtn.addEventListener('click', () => modal.style.display = 'none');
             
             window.addEventListener('click', (event) => {
                 if (event.target === modal) modal.style.display = 'none';
-                if (event.target === authModal) authModal.style.display = 'none';
             });
             
             syncA.addEventListener('click', () => syncBpm('A'));
@@ -2270,11 +1810,6 @@
                     const bpmA = parseFloat(document.getElementById('bpmLargeA').textContent);
                     const bpmB = parseFloat(document.getElementById('bpmLargeB').textContent);
                     document.querySelector('.master-bpm-display').textContent = `Master: ${((bpmA + bpmB) / 2).toFixed(1)} BPM`;
-                    
-                    // Обновляем тональность если Key Lock выключен
-                    if (!keyLockState[deckId] && !scratchModeState[deckId]) {
-                        updateKeyBasedOnPitch(deckId);
-                    }
                 });
             });
             
@@ -2295,11 +1830,6 @@
             window.addEventListener('resize', () => {
                 createWaveformBars('A');
                 createWaveformBars('B');
-            });
-            
-            // Обработчик для кнопки входа
-            loginButton.addEventListener('click', function() {
-                authModal.style.display = 'block';
             });
         });
     </script>
